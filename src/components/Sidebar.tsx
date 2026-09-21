@@ -90,7 +90,6 @@ export const Sidebar: React.FC = () => {
   const isSettingsActive = currentView === 'settings';
 
   return (
-  return (
     <aside className={`hidden md:flex flex-col w-64 border-r h-screen sticky top-0 px-4 py-4 select-none shrink-0 z-20 transition-colors duration-300 justify-between ${
       isDark
         ? 'bg-[#1E1B18] border-[#332D28]'
