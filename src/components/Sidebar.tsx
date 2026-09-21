@@ -33,6 +33,11 @@ export const Sidebar: React.FC = () => {
     { id: 'ai-summary', label: 'Saved Summaries', icon: <Bookmark size={18} />, badge: savedSummaryIds.length },
   ];
 
+  /* ── Active colours (used as inline styles to bypass CSS-layer cascade issue) ── */
+  const activeBg   = isDark ? '#CDB891' : '#2C2421';
+  const activeText = isDark ? '#1A1714' : '#FFF8E7';
+  const activeIcon = isDark ? '#3A2E20' : '#CDB891';
+
   const renderNavItem = (item: (typeof mainNav)[0]) => {
     const isActive = currentView === item.id;
 
@@ -40,38 +45,36 @@ export const Sidebar: React.FC = () => {
       <li key={item.id}>
         <button
           onClick={() => navigateTo(item.id)}
-          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
+          /* inline style guarantees the bg colour renders regardless of CSS-layer cascade */
+          style={isActive ? { backgroundColor: activeBg, color: activeText } : undefined}
+          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
             isActive
-              ? isDark
-                ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
-                : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
+              ? 'font-semibold shadow-md'
               : isDark
                 ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
                 : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
           }`}
         >
-          {/* Active left bar indicator */}
-          {isActive && (
-            <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
-              isDark ? 'bg-[#1A1714]' : 'bg-white/60'
-            }`} />
-          )}
-          <div className="flex items-center gap-3 pl-1">
-            <span className={
-              isActive
-                ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
-                : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
-            }>
+          <div className="flex items-center gap-3">
+            {/* Icon colour: always visible — accent gold on dark bg, or muted on inactive */}
+            <span style={isActive ? { color: activeIcon } : undefined}
+              className={!isActive ? (isDark ? 'text-[#CDB891]' : 'text-[#8C7355]') : ''}>
               {item.icon}
             </span>
             <span>{item.label}</span>
           </div>
+
           {item.badge !== undefined && item.badge > 0 && (
-            <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-              isActive
-                ? isDark ? 'bg-[#1A1714]/30 text-[#1A1714]' : 'bg-white/25 text-white'
-                : isDark ? 'bg-[#3A3028] text-[#CDB891]' : 'bg-[#F7E7CE] text-[#8C7355]'
-            }`}>
+            <span
+              style={isActive ? { backgroundColor: isDark ? 'rgba(26,23,20,0.25)' : 'rgba(255,255,255,0.25)', color: activeText } : undefined}
+              className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
+                !isActive
+                  ? isDark
+                    ? 'bg-[#3A3028] text-[#CDB891]'
+                    : 'bg-[#F7E7CE] text-[#8C7355]'
+                  : ''
+              }`}
+            >
               {item.badge}
             </span>
           )}
@@ -83,6 +86,8 @@ export const Sidebar: React.FC = () => {
   const labelClass = `text-[10px] font-semibold tracking-widest uppercase px-2 mb-2 block ${
     isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'
   }`;
+
+  const isSettingsActive = currentView === 'settings';
 
   return (
     <aside className={`hidden md:flex flex-col w-64 border-r h-screen sticky top-0 px-5 py-6 select-none shrink-0 z-20 transition-colors duration-300 ${
@@ -102,7 +107,7 @@ export const Sidebar: React.FC = () => {
       <nav className="flex-1 space-y-6 overflow-y-auto pr-1">
         <div>
           <span className={labelClass}>Library</span>
-          <ul className="space-y-1">
+          <ul className="space-y-0.5">
             {mainNav.map(renderNavItem)}
           </ul>
         </div>
@@ -110,57 +115,14 @@ export const Sidebar: React.FC = () => {
         {/* Secondary Navigation */}
         <div>
           <span className={labelClass}>Personal Space</span>
-          <ul className="space-y-1">
-            {secondaryNav.map((item) => {
-              const isActive = currentView === item.id;
-              return (
-                <li key={item.id}>
-                  <button
-                    onClick={() => navigateTo(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
-                      isActive
-                        ? isDark
-                          ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
-                          : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
-                        : isDark
-                          ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
-                          : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
-                    }`}
-                  >
-                    {isActive && (
-                      <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
-                        isDark ? 'bg-[#1A1714]' : 'bg-white/60'
-                      }`} />
-                    )}
-                    <div className="flex items-center gap-3 pl-1">
-                      <span className={
-                        isActive
-                          ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
-                          : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
-                      }>
-                        {item.icon}
-                      </span>
-                      <span>{item.label}</span>
-                    </div>
-                    {item.badge !== undefined && item.badge > 0 && (
-                      <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                        isActive
-                          ? isDark ? 'bg-[#1A1714]/30 text-[#1A1714]' : 'bg-white/25 text-white'
-                          : isDark ? 'bg-[#3A3028] text-[#CDB891]' : 'bg-[#F7E7CE] text-[#8C7355]'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                </li>
-              );
-            })}
+          <ul className="space-y-0.5">
+            {secondaryNav.map(renderNavItem)}
           </ul>
         </div>
       </nav>
 
       {/* Editorial Quote Card */}
-      <div className={`my-3 p-3.5 rounded-xl border shadow-xs ${
+      <div className={`my-3 p-3.5 rounded-xl border ${
         isDark 
           ? 'bg-[#2D2822] border-[#4A3E35]/60' 
           : 'bg-[#F7E7CE] border-[#CDB891]/60'
@@ -191,29 +153,20 @@ export const Sidebar: React.FC = () => {
       <div className={`pt-2 border-t space-y-1 ${isDark ? 'border-[#332D28]' : 'border-[#E8DACD]'}`}>
         <button
           onClick={() => navigateTo('settings')}
-          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
-            currentView === 'settings'
-              ? isDark
-                ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
-                : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
+          style={isSettingsActive ? { backgroundColor: activeBg, color: activeText } : undefined}
+          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
+            isSettingsActive
+              ? 'font-semibold shadow-md'
               : isDark
                 ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
                 : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
           }`}
         >
-          {currentView === 'settings' && (
-            <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
-              isDark ? 'bg-[#1A1714]' : 'bg-white/60'
-            }`} />
-          )}
-          <div className="flex items-center gap-3 pl-1">
-            <Settings size={18} className={
-              currentView === 'settings'
-                ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
-                : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
-            } />
-            <span>Settings</span>
-          </div>
+          <span style={isSettingsActive ? { color: activeIcon } : undefined}
+            className={!isSettingsActive ? (isDark ? 'text-[#CDB891]' : 'text-[#8C7355]') : ''}>
+            <Settings size={18} />
+          </span>
+          <span>Settings</span>
         </button>
 
         <div className={`flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl border ${
