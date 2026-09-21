@@ -1,10 +1,10 @@
 import React from 'react';
-import { Search, Upload, BookOpen } from 'lucide-react';
+import { Search, Upload, BookOpen, Sun, Moon } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 import { LuminaLogo } from './LuminaLogo';
 
 export const Header: React.FC = () => {
-  const { currentView, searchQuery, setSearchQuery, navigateTo } = useLibrary();
+  const { currentView, searchQuery, setSearchQuery, navigateTo, appTheme, toggleAppTheme } = useLibrary();
 
   // Hide global header inside distraction-free reader screen
   if (currentView === 'reader') {
@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 bg-[#FFF8E7]/90 backdrop-blur-sm z-10 border-b border-[#E8DACD]/50 px-6 py-3.5 flex items-center justify-between gap-4">
+    <header className="sticky top-0 bg-[var(--bg-app)]/90 backdrop-blur-sm z-10 border-b border-[#E8DACD]/50 px-6 py-3.5 flex items-center justify-between gap-4">
       {/* Mobile Brand Logo */}
       <div 
         onClick={() => navigateTo('home')}
@@ -38,8 +38,18 @@ export const Header: React.FC = () => {
         />
       </div>
 
-      {/* Quick Action Button */}
+      {/* Quick Action Button & Theme Toggle */}
       <div className="flex items-center gap-3">
+        {/* Light / Dark Mode Switch */}
+        <button
+          onClick={toggleAppTheme}
+          className="p-2.5 rounded-full bg-[#FAF0E6] text-[#8C7355] hover:bg-[#F7E7CE] border border-[#CDB891]/40 transition-smooth cursor-pointer"
+          title={appTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          aria-label="Toggle Theme"
+        >
+          {appTheme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+        </button>
+
         <button
           onClick={() => navigateTo('upload')}
           className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#2C2421] text-[#FFF8E7] hover:bg-[#4A3E3D] text-xs font-semibold transition-all duration-200 shadow-md border border-[#CDB891]/40 cursor-pointer"

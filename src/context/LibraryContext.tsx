@@ -14,11 +14,13 @@ interface LibraryContextType {
   readerSettings: ReaderSettings;
   audioState: AudioState;
   searchQuery: string;
+  appTheme: 'light' | 'dark';
 
   // Actions
   navigateTo: (view: PageView, bookId?: string) => void;
   toggleFavorite: (bookId: string) => void;
   toggleSaveSummary: (bookId: string) => void;
+  toggleAppTheme: () => void;
   addUploadedBook: (newBook: Book) => void;
   removeUploadedBook: (bookId: string) => void;
   addHighlight: (highlight: Omit<Highlight, 'id' | 'createdAt'>) => void;
@@ -127,6 +129,11 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [readerSettings, setReaderSettings] = useState<ReaderSettings>(defaultReaderSettings);
   const [audioState, setAudioState] = useState<AudioState>(defaultAudioState);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [appTheme, setAppTheme] = useState<'light' | 'dark'>('light');
+
+  const toggleAppTheme = () => {
+    setAppTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const activeBook = books.find(b => b.id === activeBookId) || books[0];
   const uploadedBooks = books.filter(b => b.isUploaded);
@@ -244,9 +251,11 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         readerSettings,
         audioState,
         searchQuery,
+        appTheme,
         navigateTo,
         toggleFavorite,
         toggleSaveSummary,
+        toggleAppTheme,
         addUploadedBook,
         removeUploadedBook,
         addHighlight,

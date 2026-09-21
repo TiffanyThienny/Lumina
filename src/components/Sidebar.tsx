@@ -9,7 +9,6 @@ import {
   Bookmark, 
   Settings, 
   UserCircle2,
-  Sparkles,
   Highlighter
 } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
@@ -122,18 +121,25 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Editorial Quote Card */}
-      <div className="my-4 p-3.5 rounded-xl bg-[#F7E7CE] border border-[#CDB891]/60 shadow-xs">
-        <div className="flex items-center gap-1.5 text-xs text-[#8C7355] font-semibold mb-1">
-          <Sparkles size={13} />
-          <span>Daily Reflection</span>
-        </div>
+      <div className="my-3 p-3.5 rounded-xl bg-[#F7E7CE] border border-[#CDB891]/60 shadow-xs">
+        <span className="text-[10px] font-semibold text-[#8C7355] uppercase tracking-wider block mb-1">
+          Daily Reflection
+        </span>
         <p className="text-[12px] font-serif italic text-[#2C2421] leading-relaxed">
           "A room without books is like a body without a soul."
         </p>
       </div>
 
+      {/* BINUS University Logo Badge */}
+      <div className="px-2 py-2 flex items-center gap-2 border-t border-[#E8DACD]/60 my-1">
+        <img src="/binus.png" alt="Binus University" className="h-7 object-contain rounded-md" />
+        <span className="text-[10px] font-semibold text-[#8C7B73] leading-tight">
+          BINUS University
+        </span>
+      </div>
+
       {/* Bottom Profile & Settings */}
-      <div className="pt-4 border-t border-[#E8DACD] space-y-1">
+      <div className="pt-2 border-t border-[#E8DACD] space-y-1">
         <button
           onClick={() => navigateTo('settings')}
           className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
@@ -146,7 +152,7 @@ export const Sidebar: React.FC = () => {
           <span>Settings</span>
         </button>
 
-        <div className="flex items-center gap-3 px-3 py-2 mt-2 rounded-xl bg-[#FAEBD7]/70 text-[#2C2421]">
+        <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl bg-[#FAEBD7]/70 text-[#2C2421]">
           <UserCircle2 size={32} className="text-[#8C7355]" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-[#2C2421] truncate">Eleanor Vance</p>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { 
   BookOpen, 
-  Sparkles, 
   ArrowRight, 
   Heart, 
   Volume2, 
@@ -9,7 +8,14 @@ import {
   Flame,
   Compass,
   Headphones,
-  CheckCircle2
+  CheckCircle2,
+  User,
+  Cpu,
+  Atom,
+  Briefcase,
+  GraduationCap,
+  Brain,
+  Landmark
 } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 import type { Category } from '../types';
@@ -27,15 +33,15 @@ export const HomePage: React.FC = () => {
   // Primary featured reading book
   const continuingBook = books[0];
 
-  const categories: { name: Category; icon: string }[] = [
-    { name: 'Fiction', icon: '✨' },
-    { name: 'Self Development', icon: '🌱' },
-    { name: 'Technology', icon: '⚡' },
-    { name: 'Science', icon: '🧪' },
-    { name: 'Business', icon: '💼' },
-    { name: 'Education', icon: '🎓' },
-    { name: 'Psychology', icon: '🧠' },
-    { name: 'History', icon: '🏛️' }
+  const categories: { name: Category; icon: React.ReactNode }[] = [
+    { name: 'Fiction', icon: <BookOpen size={14} /> },
+    { name: 'Self Development', icon: <User size={14} /> },
+    { name: 'Technology', icon: <Cpu size={14} /> },
+    { name: 'Science', icon: <Atom size={14} /> },
+    { name: 'Business', icon: <Briefcase size={14} /> },
+    { name: 'Education', icon: <GraduationCap size={14} /> },
+    { name: 'Psychology', icon: <Brain size={14} /> },
+    { name: 'History', icon: <Landmark size={14} /> }
   ];
 
   const quickReads = books.slice(0, 4);
@@ -52,7 +58,6 @@ export const HomePage: React.FC = () => {
         <div className="relative z-10 space-y-4">
           <div className="flex items-center gap-2">
             <span className="editorial-tag shadow-xs">
-              <Sparkles size={13} className="text-[#8C7355]" />
               Lumina Sanctuary
             </span>
             <span className="text-xs text-[#8C7B73] font-mono">
@@ -68,7 +73,7 @@ export const HomePage: React.FC = () => {
           </h1>
 
           <p className="text-xs sm:text-sm text-[#5E504A] font-normal max-w-2xl leading-relaxed">
-            Welcome to your distraction-free digital library. Immerse yourself in Stoic wisdom, explore AI-distilled summaries, or continue your peaceful reading room journey.
+            Welcome to your distraction-free digital library. Immerse yourself in Stoic wisdom, explore book summaries, or continue your peaceful reading room journey.
           </p>
 
           {/* Quick Live Stats Strip */}
@@ -78,7 +83,7 @@ export const HomePage: React.FC = () => {
               <span>1 Active Book</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#8C7355]" />
+              <BookOpen size={14} className="text-[#8C7355]" />
               <span>{savedSummaryIds.length} Saved Summaries</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -189,8 +194,8 @@ export const HomePage: React.FC = () => {
                 onClick={() => navigateTo('ai-summary', continuingBook.id)}
                 className="px-6 py-3.5 rounded-full bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] border border-[#CDB891]/40 text-xs font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-xs"
               >
-                <Sparkles size={16} />
-                <span>AI Summary</span>
+                <BookOpen size={15} />
+                <span>View Summary</span>
               </button>
 
               <button
@@ -244,7 +249,7 @@ export const HomePage: React.FC = () => {
               onClick={() => navigateTo('discover')}
               className="px-4 py-2.5 rounded-2xl bg-[#FAF0E6] border border-[#E8DACD] text-xs font-medium text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421] hover:border-[#CDB891] transition-all duration-200 shrink-0 flex items-center gap-2 cursor-pointer shadow-xs"
             >
-              <span>{cat.icon}</span>
+              <span className="text-[#8C7355]">{cat.icon}</span>
               <span>{cat.name}</span>
             </button>
           ))}
@@ -319,7 +324,7 @@ export const HomePage: React.FC = () => {
                     onClick={() => navigateTo('ai-summary', book.id)}
                     className="px-3 py-1.5 rounded-xl bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] transition-smooth font-semibold text-[11px] flex items-center gap-1 cursor-pointer"
                   >
-                    <Sparkles size={13} />
+                    <BookOpen size={13} />
                     <span>Summary</span>
                   </button>
 

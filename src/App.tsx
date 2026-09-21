@@ -5,6 +5,7 @@ import { BottomNavigation } from './components/BottomNavigation';
 import { Header } from './components/Header';
 import { MiniAudioPlayer } from './components/MiniAudioPlayer';
 import { AudioPlayerModal } from './components/AudioPlayerModal';
+import { ScrollToTop } from './components/ScrollToTop';
 
 import { HomePage } from './pages/HomePage';
 import { DiscoverPage } from './pages/DiscoverPage';
@@ -21,7 +22,7 @@ import { NotesHighlightsPage } from './pages/NotesHighlightsPage';
 import { ProfileSettingsPage } from './pages/ProfileSettingsPage';
 
 const AppContent: React.FC = () => {
-  const { currentView } = useLibrary();
+  const { currentView, appTheme } = useLibrary();
 
   const renderView = () => {
     switch (currentView) {
@@ -59,8 +60,12 @@ const AppContent: React.FC = () => {
   const isReaderView = currentView === 'reader';
 
   return (
-    <div className="flex min-h-screen bg-[#FFF8E7] text-[#2C2421]">
-      {/* Desktop Left Sidebar (hidden in reader view if needed, or styled) */}
+    <div className={`flex min-h-screen transition-colors duration-300 ${
+      appTheme === 'dark' 
+        ? 'bg-[#1C1816] text-[#E8DED2] theme-dark' 
+        : 'bg-[#FFF8E7] text-[#2C2421]'
+    }`}>
+      {/* Desktop Left Sidebar */}
       {!isReaderView && <Sidebar />}
 
       {/* Main Container */}
@@ -73,6 +78,7 @@ const AppContent: React.FC = () => {
 
         <MiniAudioPlayer />
         <AudioPlayerModal />
+        <ScrollToTop />
         {!isReaderView && <BottomNavigation />}
       </div>
     </div>
