@@ -207,14 +207,18 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const playAudioTrack = (book: Book, type: 'book' | 'chapter' | 'summary', title?: string) => {
+    const cleanTitle = book.title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
+    const isSummary = type === 'summary';
+    const trackName = title ? title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ') : (isSummary ? `${cleanTitle} (AI Summary)` : `${cleanTitle} (Full Book)`);
+
     setAudioState({
       isPlaying: true,
-      trackTitle: title || (type === 'summary' ? `${book.title} (Summary)` : book.title),
-      bookTitle: book.title,
+      trackTitle: trackName,
+      bookTitle: cleanTitle,
       bookId: book.id,
       coverBg: book.coverBg,
       currentTime: 14,
-      duration: type === 'summary' ? 420 : 1200,
+      duration: isSummary ? 420 : 1200,
       speed: audioState.speed,
       isModalOpen: false,
       type

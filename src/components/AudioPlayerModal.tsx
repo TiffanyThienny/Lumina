@@ -1,11 +1,14 @@
 import React from 'react';
-import { X, Play, Pause, SkipBack, SkipForward, Volume2, Gauge } from 'lucide-react';
+import { X, Play, Pause, SkipBack, SkipForward, Volume2, Gauge, BookOpen, Sparkles } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 
 export const AudioPlayerModal: React.FC = () => {
-  const { audioState, closeAudioModal, toggleAudioPlayPause, setAudioSpeed } = useLibrary();
+  const { audioState, closeAudioModal, toggleAudioPlayPause, setAudioSpeed, playAudioTrack, activeBook } = useLibrary();
 
   if (!audioState.isModalOpen) return null;
+
+  const cleanBookTitle = (audioState.bookTitle || '').replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
+  const cleanTrackTitle = (audioState.trackTitle || '').replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -27,29 +30,68 @@ export const AudioPlayerModal: React.FC = () => {
         </button>
 
         {/* Header Tag */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <span className="text-[11px] font-semibold tracking-widest uppercase text-[#CDB891] bg-[#3A322D] px-3 py-1 rounded-full border border-[#4A3E3D]">
             Audio Experience
           </span>
         </div>
 
+        {/* Text-to-Speech Mode Options: Full Book vs Summary */}
+        <div className="flex items-center justify-center gap-2 mb-6 bg-[#1F1917] p-1.5 rounded-2xl border border-[#3A322D]">
+          <button
+            onClick={() => {
+              if (activeBook) {
+                playAudioTrack(activeBook, 'book', `${activeBook.title} (Full Book)`);
+              }
+            }}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-smooth flex items-center justify-center gap-1.5 cursor-pointer ${
+              audioState.type === 'book'
+                ? 'bg-[#CDB891] text-[#2C2421] font-semibold shadow-xs'
+                : 'text-[#8C7B73] hover:text-[#FAF0E6]'
+            }`}
+          >
+            <BookOpen size={14} />
+            <span>Full Book</span>
+          </button>
+
+          <button
+            onClick={() => {
+              if (activeBook) {
+                playAudioTrack(activeBook, 'summary', `${activeBook.title} (AI Summary)`);
+              }
+            }}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-smooth flex items-center justify-center gap-1.5 cursor-pointer ${
+              audioState.type === 'summary'
+                ? 'bg-[#CDB891] text-[#2C2421] font-semibold shadow-xs'
+                : 'text-[#8C7B73] hover:text-[#FAF0E6]'
+            }`}
+          >
+            <Sparkles size={14} />
+            <span>AI Summary</span>
+          </button>
+        </div>
+
         {/* Large Album Cover Art */}
-        <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl shadow-2xl mb-6 flex flex-col items-center justify-center p-6 text-center border border-[#4A3E3D]"
+        <div className="w-44 h-44 sm:w-52 sm:h-52 mx-auto rounded-2xl shadow-2xl mb-6 flex flex-col items-center justify-center p-5 text-center border border-[#4A3E3D] relative overflow-hidden"
           style={{ background: audioState.coverBg || 'linear-gradient(135deg, #8C7355 0%, #4A3E3D 100%)' }}
         >
-          <Volume2 size={40} className="text-[#FAF0E6]/80 mb-3" />
-          <p className="font-serif font-bold text-lg text-[#FAF0E6] line-clamp-2">
-            {audioState.bookTitle}
+          <Volume2 size={36} className="text-[#FAF0E6]/80 mb-2 shrink-0" />
+          <p className="font-serif font-bold text-sm sm:text-base text-[#FAF0E6] leading-tight line-clamp-3 break-words max-w-full px-2">
+            {cleanBookTitle}
           </p>
+          <span className="text-[10px] uppercase font-mono tracking-wider text-[#FAF0E6]/70 mt-2 bg-black/20 px-2 py-0.5 rounded-full">
+            {audioState.type === 'summary' ? 'Summary Audio' : 'Full Book Audio'}
+          </span>
         </div>
 
         {/* Track Metadata */}
-        <div className="text-center mb-6">
-          <h3 className="font-serif text-xl font-semibold text-[#FAF0E6] mb-1">
-            {audioState.trackTitle}
+        <div className="text-center mb-6 px-2">
+          <h3 className="font-serif text-lg sm:text-xl font-semibold text-[#FAF0E6] mb-1 leading-snug break-words">
+            {cleanTrackTitle}
           </h3>
-          <p className="text-xs text-[#CDB891]">
-            Lumina Audio Narrator
+          <p className="text-xs text-[#CDB891] flex items-center justify-center gap-1">
+            <Sparkles size={12} />
+            <span>Lumina Text-to-Speech Narrator</span>
           </p>
         </div>
 

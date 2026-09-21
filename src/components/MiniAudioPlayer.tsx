@@ -1,57 +1,77 @@
-import React from 'react';
-import { Play, Pause, Volume2, Maximize2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Play, Pause, Volume2, Maximize2, X } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 
 export const MiniAudioPlayer: React.FC = () => {
   const { audioState, toggleAudioPlayPause, openAudioModal, currentView } = useLibrary();
+  const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
-  // Show player only if a track is loaded
-  if (!audioState.trackTitle) {
+  // Reset dismissal whenever a new track or book is played
+  useEffect(() => {
+    if (audioState.trackTitle) {
+      setIsDismissed(false);
+    }
+  }, [audioState.trackTitle, audioState.bookId, audioState.type]);
+
+  // Show player only if a track is loaded and not manually dismissed
+  if (!audioState.trackTitle || isDismissed) {
     return null;
   }
+
+  const cleanTrackTitle = audioState.trackTitle.replace(/_/g, ' ');
+  const cleanBookTitle = audioState.bookTitle.replace(/_/g, ' ');
 
   // Position nicely above mobile bottom bar when on mobile
   const bottomOffset = currentView === 'reader' ? 'bottom-4' : 'bottom-16 md:bottom-5';
 
   return (
-    <div className={`fixed ${bottomOffset} left-4 right-4 md:left-auto md:right-6 md:w-96 bg-[#2C2421] text-[#FAF0E6] p-3 rounded-2xl shadow-xl z-30 flex items-center justify-between gap-3 border border-[#4A3E3D] animate-fade-in`}>
+    <div className={`fixed ${bottomOffset} left-4 right-4 md:left-auto md:right-6 md:w-96 bg-[#2C2421] text-[#FAF0E6] p-3 rounded-2xl shadow-2xl z-30 flex items-center justify-between gap-3 border border-[#4A3E3D] animate-fade-in`}>
       {/* Cover / Track Info */}
       <div 
         onClick={openAudioModal}
         className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer group"
       >
         <div 
-          className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center font-serif font-bold text-xs shadow-inner"
+          className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-serif font-bold text-xs shadow-inner"
           style={{ background: audioState.coverBg || 'linear-gradient(135deg, #8C7355 0%, #4A3E3D 100%)' }}
         >
           <Volume2 size={18} className="text-[#FAF0E6]/90" />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="text-xs font-semibold text-[#FAF0E6] truncate group-hover:text-[#F7E7CE] transition-smooth">
-            {audioState.trackTitle}
+            {cleanTrackTitle}
           </h4>
           <p className="text-[11px] text-[#CDB891] truncate">
-            {audioState.bookTitle}
+            {cleanBookTitle}
           </p>
         </div>
       </div>
 
-      {/* Play Controls */}
-      <div className="flex items-center gap-2">
+      {/* Play Controls & Close Button */}
+      <div className="flex items-center gap-1.5">
         <button
           onClick={toggleAudioPlayPause}
-          className="w-9 h-9 rounded-full bg-[#CDB891] text-[#2C2421] flex items-center justify-center hover:bg-[#F7E7CE] transition-smooth cursor-pointer"
+          className="w-8 h-8 rounded-full bg-[#CDB891] text-[#2C2421] flex items-center justify-center hover:bg-[#F7E7CE] transition-smooth cursor-pointer"
           aria-label={audioState.isPlaying ? 'Pause' : 'Play'}
         >
-          {audioState.isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="ml-0.5" />}
+          {audioState.isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" className="ml-0.5" />}
         </button>
 
         <button
           onClick={openAudioModal}
-          className="p-2 text-[#CDB891] hover:text-[#FAF0E6] transition-smooth cursor-pointer"
+          className="p-1.5 text-[#CDB891] hover:text-[#FAF0E6] transition-smooth cursor-pointer"
           title="Expand Player"
         >
-          <Maximize2 size={16} />
+          <Maximize2 size={15} />
+        </button>
+
+        {/* Explicit Close X Button */}
+        <button
+          onClick={() => setIsDismissed(true)}
+          className="p-1.5 text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer rounded-full hover:bg-[#3A322D]"
+          title="Close Audio Player"
+        >
+          <X size={15} />
         </button>
       </div>
     </div>

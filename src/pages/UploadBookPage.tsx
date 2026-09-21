@@ -16,9 +16,10 @@ export const UploadBookPage: React.FC = () => {
 
     // Simulate clean 3-step progress: Choose Book -> Processing -> Book Ready
     setTimeout(() => {
+      const cleanTitle = fileTitle.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
       const mockBook: Book = {
         id: `upload-${Date.now()}`,
-        title: fileTitle.replace(/\.(pdf|epub)$/i, ''),
+        title: cleanTitle,
         author: 'Uploaded Document',
         category: 'Self Development',
         coverBg: 'linear-gradient(135deg, #8C7355 0%, #4A3E3D 100%)',

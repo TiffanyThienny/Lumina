@@ -27,6 +27,7 @@ export const BookDetailPage: React.FC = () => {
   const book = activeBook;
   const isFav = favoriteIds.includes(book.id);
   const isSummarySaved = savedSummaryIds.includes(book.id);
+  const cleanBookTitle = book.title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-10 animate-fade-in">
@@ -42,18 +43,18 @@ export const BookDetailPage: React.FC = () => {
       {/* Book Hero Header - Editorial Split Layout */}
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 lg:gap-12">
         {/* Book Cover */}
-        <div className="w-56 h-80 sm:w-64 sm:h-92 rounded-2xl shadow-xl shrink-0 flex flex-col justify-between p-8 text-center border border-black/10 relative overflow-hidden"
+        <div className="w-56 h-80 sm:w-64 sm:h-92 rounded-2xl shadow-xl shrink-0 flex flex-col justify-between p-6 sm:p-8 text-center border border-black/10 relative overflow-hidden"
           style={{ background: book.coverBg }}
         >
           <span className="text-[11px] font-semibold uppercase tracking-widest text-[#CDB891]">
             {book.category}
           </span>
 
-          <div className="space-y-2">
-            <h1 className="font-serif font-bold text-2xl leading-tight" style={{ color: book.coverTextColor || '#FAF0E6' }}>
-              {book.title}
+          <div className="space-y-2 max-w-full">
+            <h1 className="font-serif font-bold text-xl sm:text-2xl leading-snug break-words line-clamp-4 px-1" style={{ color: book.coverTextColor || '#FAF0E6' }}>
+              {cleanBookTitle}
             </h1>
-            <p className="text-sm font-serif italic text-white/80">
+            <p className="text-xs sm:text-sm font-serif italic text-white/80 truncate">
               {book.author}
             </p>
           </div>
@@ -73,7 +74,7 @@ export const BookDetailPage: React.FC = () => {
             </div>
 
             <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[#2C2421] tracking-tight">
-              {book.title}
+              {cleanBookTitle}
             </h1>
             <p className="text-base text-[#8C7B73] font-serif italic mt-1">
               by {book.author}
@@ -110,14 +111,26 @@ export const BookDetailPage: React.FC = () => {
               <span>Ask AI</span>
             </button>
 
+            {/* TTS Options: Full Book vs Summary Audio */}
             {book.isAudioAvailable && (
-              <button
-                onClick={() => playAudioTrack(book, 'book')}
-                className="p-3 rounded-full bg-[#FAF0E6] text-[#5E504A] hover:bg-[#FAEBD7] border border-[#E8DACD] transition-smooth cursor-pointer"
-                title="Listen to Audio"
-              >
-                <Volume2 size={16} className="text-[#8C7355]" />
-              </button>
+              <div className="flex items-center gap-1.5 bg-[#FAF0E6] p-1 rounded-full border border-[#E8DACD]">
+                <button
+                  onClick={() => playAudioTrack(book, 'book', `${cleanBookTitle} (Full Book)`)}
+                  className="px-3.5 py-2 rounded-full hover:bg-[#F7E7CE] text-[#5E504A] text-xs font-medium transition-smooth flex items-center gap-1.5 cursor-pointer"
+                  title="Listen Full Book Audio"
+                >
+                  <Volume2 size={15} className="text-[#8C7355]" />
+                  <span>Full Audio</span>
+                </button>
+                <button
+                  onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (AI Summary)`)}
+                  className="px-3.5 py-2 rounded-full hover:bg-[#F7E7CE] text-[#8C7355] text-xs font-semibold transition-smooth flex items-center gap-1.5 cursor-pointer"
+                  title="Listen AI Summary Audio"
+                >
+                  <Sparkles size={14} />
+                  <span>Summary Audio</span>
+                </button>
+              </div>
             )}
 
             <button
@@ -280,20 +293,30 @@ export const BookDetailPage: React.FC = () => {
             </div>
             <div className="space-y-1">
               <h3 className="font-serif text-xl font-semibold text-[#2C2421]">
-                Narrated audiobook available
+                Narrated Audio Experience
               </h3>
               <p className="text-xs text-[#5E504A]">
-                Duration: {book.audioDuration || '3 hrs 45 mins'} • Narrated by Lumina Audio
+                Full Duration: {book.audioDuration || '3 hrs 45 mins'} • AI Summary Duration: ~7 mins • Lumina TTS Engine
               </p>
             </div>
 
-            <button
-              onClick={() => playAudioTrack(book, 'book')}
-              className="px-8 py-3.5 rounded-full bg-[#2C2421] text-[#FFF8E7] hover:bg-[#4A3E3D] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer"
-            >
-              <Volume2 size={16} />
-              <span>Start Listening Now</span>
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+              <button
+                onClick={() => playAudioTrack(book, 'book', `${cleanBookTitle} (Full Book)`)}
+                className="px-8 py-3.5 rounded-full bg-[#2C2421] text-[#FFF8E7] hover:bg-[#4A3E3D] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer shadow-xs"
+              >
+                <Volume2 size={16} />
+                <span>Listen Full Book Narration</span>
+              </button>
+
+              <button
+                onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (AI Summary)`)}
+                className="px-8 py-3.5 rounded-full bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer border border-[#CDB891]/50"
+              >
+                <Sparkles size={16} />
+                <span>Listen AI Summary Audio</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
