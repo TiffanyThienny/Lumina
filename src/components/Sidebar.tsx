@@ -56,21 +56,21 @@ export const Sidebar: React.FC = () => {
                 <li key={item.id}>
                   <button
                     onClick={() => navigateTo(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-smooth ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                       isActive 
-                        ? 'bg-[#F7E7CE] text-[#2C2421] font-semibold shadow-xs' 
-                        : 'text-[#5E504A] hover:bg-[#FAEBD7] hover:text-[#2C2421]'
+                        ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
+                        : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={isActive ? 'text-[#8C7355]' : 'text-[#8C7B73]'}>
+                      <span className={isActive ? 'text-[#FFF8E7]' : 'text-[#8C7355]'}>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
                     </div>
                     {item.badge !== undefined && item.badge > 0 && (
                       <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                        isActive ? 'bg-[#CDB891] text-[#2C2421]' : 'bg-[#FAEBD7] text-[#8C7B73]'
+                        isActive ? 'bg-[#2C2421] text-[#FFF8E7]' : 'bg-[#F7E7CE] text-[#8C7355]'
                       }`}>
                         {item.badge}
                       </span>
@@ -94,20 +94,22 @@ export const Sidebar: React.FC = () => {
                 <li key={item.id}>
                   <button
                     onClick={() => navigateTo(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-smooth ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                       isActive 
-                        ? 'bg-[#F7E7CE] text-[#2C2421] font-semibold shadow-xs' 
-                        : 'text-[#5E504A] hover:bg-[#FAEBD7] hover:text-[#2C2421]'
+                        ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
+                        : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={isActive ? 'text-[#8C7355]' : 'text-[#8C7B73]'}>
+                      <span className={isActive ? 'text-[#FFF8E7]' : 'text-[#8C7355]'}>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
                     </div>
                     {item.label === 'Uploaded Books' && uploadedBooks.length > 0 && (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAEBD7] text-[#8C7B73] font-semibold">
+                      <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
+                        isActive ? 'bg-[#2C2421] text-[#FFF8E7]' : 'bg-[#F7E7CE] text-[#8C7355]'
+                      }`}>
                         {uploadedBooks.length}
                       </span>
                     )}
@@ -120,12 +122,12 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Editorial Quote Card */}
-      <div className="my-4 p-3.5 rounded-xl bg-[#F7E7CE]/60 border border-[#CDB891]/30">
-        <div className="flex items-center gap-1.5 text-xs text-[#8C7355] font-medium mb-1">
+      <div className="my-4 p-3.5 rounded-xl bg-[#F7E7CE] border border-[#CDB891]/60 shadow-xs">
+        <div className="flex items-center gap-1.5 text-xs text-[#8C7355] font-semibold mb-1">
           <Sparkles size={13} />
           <span>Daily Reflection</span>
         </div>
-        <p className="text-[12px] font-serif italic text-[#5E504A] leading-relaxed">
+        <p className="text-[12px] font-serif italic text-[#2C2421] leading-relaxed">
           "A room without books is like a body without a soul."
         </p>
       </div>
@@ -134,13 +136,13 @@ export const Sidebar: React.FC = () => {
       <div className="pt-4 border-t border-[#E8DACD] space-y-1">
         <button
           onClick={() => navigateTo('settings')}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-smooth ${
+          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
             currentView === 'settings' 
-              ? 'bg-[#F7E7CE] text-[#2C2421] font-semibold' 
-              : 'text-[#5E504A] hover:bg-[#FAEBD7] hover:text-[#2C2421]'
+              ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
+              : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
           }`}
         >
-          <Settings size={18} className="text-[#8C7B73]" />
+          <Settings size={18} className={currentView === 'settings' ? 'text-[#FFF8E7]' : 'text-[#8C7355]'} />
           <span>Settings</span>
         </button>
 

@@ -23,7 +23,7 @@ export const Header: React.FC = () => {
 
       {/* Global Search Bar */}
       <div className="flex-1 max-w-md relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C7B73]" size={17} />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C7355]" size={17} />
         <input
           type="text"
           value={searchQuery}
@@ -34,7 +34,7 @@ export const Header: React.FC = () => {
             }
           }}
           placeholder="Search books, authors, or topics..."
-          className="w-full bg-[#FAF0E6] text-[#2C2421] placeholder-[#8C7B73] text-sm rounded-full pl-10 pr-4 py-2 border border-[#E8DACD] focus:outline-none focus:border-[#CDB891] focus:ring-2 focus:ring-[#CDB891]/20 transition-smooth"
+          className="w-full bg-[#FAF0E6] text-[#2C2421] placeholder-[#8C7B73] text-sm rounded-full pl-10 pr-4 py-2 border border-[#CDB891]/60 focus:outline-none focus:border-[#8C7355] focus:ring-2 focus:ring-[#8C7355]/20 shadow-xs transition-smooth"
         />
       </div>
 
@@ -42,9 +42,9 @@ export const Header: React.FC = () => {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigateTo('upload')}
-          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8C7355] text-[#FFF8E7] hover:bg-[#755F43] text-xs font-medium transition-smooth shadow-xs cursor-pointer"
+          className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#2C2421] text-[#FFF8E7] hover:bg-[#4A3E3D] text-xs font-semibold transition-all duration-200 shadow-md border border-[#CDB891]/40 cursor-pointer"
         >
-          <Upload size={15} />
+          <Upload size={15} className="text-[#CDB891]" />
           <span>Upload Book</span>
         </button>
 
