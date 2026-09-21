@@ -58,7 +58,7 @@ export const HomePage: React.FC = () => {
         <div className="relative z-10 space-y-4">
           <div className="flex items-center gap-2">
             <span className="editorial-tag shadow-xs">
-              Lumina Sanctuary
+              Elunè Sanctuary
             </span>
             <span className="text-xs text-[#8C7B73] font-mono">
               • Quiet Evening Session

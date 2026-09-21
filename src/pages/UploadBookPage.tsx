@@ -38,13 +38,13 @@ export const UploadBookPage: React.FC = () => {
             readingTime: '15 mins',
             summary: 'An overview of the core principles presented in this uploaded edition.',
             keyPoints: ['First foundational principle', 'Practical application in daily routine'],
-            content: `Welcome to your personal digital copy of ${cleanTitle}. Lumina has prepared this text with high-legibility serif typography for maximum reading comfort.\n\nEnjoy an uninterrupted reading session or explore the AI summary features.`
+            content: `Welcome to your personal digital copy of ${cleanTitle}. Elunè has prepared this text with high-legibility serif typography for maximum reading comfort.\n\nEnjoy an uninterrupted reading session or explore the AI summary features.`
           }
         ],
         summary: {
           quickOverview: `A synthesized overview of your uploaded file "${cleanTitle}".`,
           mainIdeas: ['Core idea 1 from your document', 'Practical key takeaway for daily reflection'],
-          keyTakeaways: ['Key takeaway synthesized by Lumina AI'],
+          keyTakeaways: ['Key takeaway synthesized by Elunè AI'],
           importantConcepts: [{ title: 'Main Subject', explanation: 'Primary focus of the document.' }]
         },
         presetQAs: [
@@ -191,7 +191,7 @@ export const UploadBookPage: React.FC = () => {
               Preparing your book…
             </h3>
             <p className={`text-sm ${textMuted}`}>
-              Lumina is setting up your distraction-free reading view
+              Elunè is setting up your distraction-free reading view
             </p>
           </div>
 

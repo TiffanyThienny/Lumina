@@ -25,7 +25,7 @@ export const ProfileSettingsPage: React.FC = () => {
             Eleanor Vance
           </h3>
           <p className="text-xs text-[#8C7B73]">
-            Member of Lumina Peaceful Reading Club • 12 Books Completed
+            Member of Elunè Peaceful Reading Club • 12 Books Completed
           </p>
           <span className="inline-block text-[10px] font-semibold text-[#8C7355] bg-[#F7E7CE] px-2.5 py-0.5 rounded-full border border-[#CDB891]/40">
             Avid Reader & Thinker
@@ -130,7 +130,7 @@ export const ProfileSettingsPage: React.FC = () => {
 
       {/* Product Footer Info */}
       <div className="text-center space-y-1 pt-6 text-xs text-[#8C7B73] border-t border-[#E8DACD]">
-        <p className="font-serif italic font-semibold text-[#2C2421]">Lumina Library v2.4</p>
+        <p className="font-serif italic font-semibold text-[#2C2421]">Elunè Library v2.4</p>
         <p>Your Peaceful AI Reading Companion • Built for calm, focus & wisdom.</p>
       </div>
     </div>

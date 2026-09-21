@@ -296,7 +296,7 @@ export const BookDetailPage: React.FC = () => {
                 Narrated Audio Experience
               </h3>
               <p className="text-xs text-[#5E504A]">
-                Full Duration: {book.audioDuration || '3 hrs 45 mins'} • AI Summary Duration: ~7 mins • Lumina TTS Engine
+                Full Duration: {book.audioDuration || '3 hrs 45 mins'} • AI Summary Duration: ~7 mins • Elunè TTS Engine
               </p>
             </div>
 

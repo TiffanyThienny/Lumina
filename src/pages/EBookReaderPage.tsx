@@ -365,7 +365,7 @@ export const EBookReaderPage: React.FC = () => {
 
         {/* Page Footer Metadata */}
         <div className="pt-12 text-center text-xs text-[var(--reader-text-muted)] font-serif italic">
-          End of Chapter {currentChapter.number} • Lumina Digital Edition
+          End of Chapter {currentChapter.number} • Elunè Digital Edition
         </div>
       </main>
 

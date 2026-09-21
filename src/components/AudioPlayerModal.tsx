@@ -91,7 +91,7 @@ export const AudioPlayerModal: React.FC = () => {
           </h3>
           <p className="text-xs text-[#CDB891] flex items-center justify-center gap-1">
             <Sparkles size={12} />
-            <span>Lumina Text-to-Speech Narrator</span>
+            <span>Elunè Text-to-Speech Narrator</span>
           </p>
         </div>
 
