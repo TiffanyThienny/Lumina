@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* Lumina Library — Warm Editorial Design System */
+
+/* Global Element Resets */
+button {
+  background: transparent;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+@layer base {
+  :root {
+    /* Color Palette */
+    --color-linen: #FAF0E6;
+    --color-antique-white: #FAEBD7;
+    --color-champagne: #F7E7CE;
+    --color-cosmic-latte: #FFF8E7;
+    --color-bisque: #FFE4C4;
+    --color-cream: #FFFDD0;
+    --color-ecru: #CDB891;
+    --color-khaki: #C3B091;
+
+    /* Text & Neutral Shades */
+    --color-text-primary: #2C2421;
+    --color-text-secondary: #5E504A;
+    --color-text-muted: #8C7B73;
+    --color-text-light: #FAF0E6;
+
+    /* Core UI Background & Surfaces */
+    --bg-app: #FFF8E7; /* Cosmic Latte default bg */
+    --bg-surface: #FAF0E6; /* Linen */
+    --bg-surface-subtle: #FAEBD7; /* Antique White */
+    --bg-accent-soft: #F7E7CE; /* Champagne */
+    --border-warm: #E8DACD;
+    --border-strong: #CDB891;
+
+    /* Accents */
+    --accent-primary: #8C7355;
+    --accent-hover: #755F43;
+    --accent-light: #F7E7CE;
+    --accent-khaki: #C3B091;
+    --accent-ecru: #CDB891;
+
+    /* Typography */
+    --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif-literata: 'Literata', Georgia, serif;
+    --font-serif-lora: 'Lora', Georgia, serif;
+    --font-serif-merriweather: 'Merriweather', Georgia, serif;
+    --font-serif-source: 'Source Serif 4', Georgia, serif;
+
+    /* Radius & Shadows - Subtle & Soft */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 9999px;
+    --shadow-soft: 0 4px 20px -2px rgba(60, 45, 35, 0.04);
+    --shadow-hover: 0 8px 30px -4px rgba(60, 45, 35, 0.08);
+
+    /* Reader Theme Defaults */
+    --reader-bg: #FFF8E7;
+    --reader-surface: #FAF0E6;
+    --reader-text: #2C2421;
+    --reader-text-muted: #6B5B53;
+    --reader-border: #E8DACD;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-ui);
+  background-color: var(--bg-app);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar - Editorial & Subtle */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ecru);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-khaki);
+}
+
+/* Editorial Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-ui);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.font-serif-literata { font-family: var(--font-serif-literata); }
+.font-serif-lora { font-family: var(--font-serif-lora); }
+.font-serif-merriweather { font-family: var(--font-serif-merriweather); }
+.font-serif-source { font-family: var(--font-serif-source); }
+
+/* Editorial Dividers & Spacing */
+.editorial-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-warm) 15%, var(--border-warm) 85%, transparent);
+  margin: 2.5rem 0;
+  border: none;
+}
+
+.editorial-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--color-champagne);
+  color: var(--color-text-secondary);
+  border: 1px solid rgba(205, 184, 145, 0.4);
+}
+
+/* Reader Themes */
+.theme-light {
+  --reader-bg: #FFF8E7;
+  --reader-surface: #FAF0E6;
+  --reader-text: #2C2421;
+  --reader-text-muted: #6B5B53;
+  --reader-border: #E5D5C5;
+}
+
+.theme-warm {
+  --reader-bg: #FAF0E6;
+  --reader-surface: #F5E5D5;
+  --reader-text: #342823;
+  --reader-text-muted: #736158;
+  --reader-border: #DDC8B6;
+}
+
+.theme-dark {
+  --reader-bg: #1B1715;
+  --reader-surface: #26201D;
+  --reader-text: #E5DCD3;
+  --reader-text-muted: #A3958B;
+  --reader-border: #3A322D;
+}
+
+/* Reader Specific Selection Styling */
+.reader-content ::selection {
+  background-color: #F7E7CE;
+  color: #2C2421;
+}
+
+.theme-dark .reader-content ::selection {
+  background-color: #594A3E;
+  color: #FAF0E6;
+}
+
+/* Selection Highlight Classes */
+mark.highlight-yellow {
+  background-color: #FCE8B2;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+mark.highlight-green {
+  background-color: #D3EBCD;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+mark.highlight-blue {
+  background-color: #D4E3FC;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+mark.highlight-rose {
+  background-color: #FAD4D8;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Transitions */
+.transition-smooth {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
