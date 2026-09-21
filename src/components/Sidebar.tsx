@@ -13,6 +13,7 @@ import {
   Highlighter
 } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
+import { LuminaLogo } from './LuminaLogo';
 import type { PageView } from '../types';
 
 export const Sidebar: React.FC = () => {
@@ -37,19 +38,9 @@ export const Sidebar: React.FC = () => {
       {/* Brand Logo */}
       <div 
         onClick={() => navigateTo('home')}
-        className="flex items-center gap-3 mb-8 cursor-pointer px-2 group"
+        className="mb-8 cursor-pointer px-1 group transition-transform hover:scale-102"
       >
-        <div className="w-9 h-9 rounded-full bg-[#CDB891] text-[#2C2421] flex items-center justify-center font-serif text-lg font-bold shadow-sm transition-transform group-hover:scale-105">
-          L
-        </div>
-        <div>
-          <h1 className="font-serif font-semibold text-lg text-[#2C2421] tracking-tight leading-none">
-            Lumina
-          </h1>
-          <span className="text-[11px] text-[#8C7B73] font-medium tracking-wide uppercase">
-            Reading Companion
-          </span>
-        </div>
+        <LuminaLogo size="md" showText={true} />
       </div>
 
       {/* Main Navigation */}

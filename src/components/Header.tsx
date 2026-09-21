@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, Upload, BookOpen } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
+import { LuminaLogo } from './LuminaLogo';
 
 export const Header: React.FC = () => {
   const { currentView, searchQuery, setSearchQuery, navigateTo } = useLibrary();
@@ -15,12 +16,9 @@ export const Header: React.FC = () => {
       {/* Mobile Brand Logo */}
       <div 
         onClick={() => navigateTo('home')}
-        className="flex md:hidden items-center gap-2 cursor-pointer"
+        className="flex md:hidden items-center cursor-pointer"
       >
-        <div className="w-8 h-8 rounded-full bg-[#CDB891] text-[#2C2421] flex items-center justify-center font-serif text-sm font-bold">
-          L
-        </div>
-        <span className="font-serif font-semibold text-base text-[#2C2421]">Lumina</span>
+        <LuminaLogo size="sm" showText={true} />
       </div>
 
       {/* Global Search Bar */}
