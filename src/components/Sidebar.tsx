@@ -16,7 +16,8 @@ import { LuminaLogo } from './LuminaLogo';
 import type { PageView } from '../types';
 
 export const Sidebar: React.FC = () => {
-  const { currentView, navigateTo, favoriteIds, savedSummaryIds, uploadedBooks } = useLibrary();
+  const { currentView, navigateTo, favoriteIds, savedSummaryIds, appTheme } = useLibrary();
+  const isDark = appTheme === 'dark';
 
   const mainNav: { id: PageView; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'home', label: 'Home', icon: <Home size={18} /> },
@@ -32,8 +33,63 @@ export const Sidebar: React.FC = () => {
     { id: 'ai-summary', label: 'Saved Summaries', icon: <Bookmark size={18} />, badge: savedSummaryIds.length },
   ];
 
+  const renderNavItem = (item: (typeof mainNav)[0]) => {
+    const isActive = currentView === item.id;
+
+    return (
+      <li key={item.id}>
+        <button
+          onClick={() => navigateTo(item.id)}
+          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
+            isActive
+              ? isDark
+                ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
+                : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
+              : isDark
+                ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
+                : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
+          }`}
+        >
+          {/* Active left bar indicator */}
+          {isActive && (
+            <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
+              isDark ? 'bg-[#1A1714]' : 'bg-white/60'
+            }`} />
+          )}
+          <div className="flex items-center gap-3 pl-1">
+            <span className={
+              isActive
+                ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
+                : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
+            }>
+              {item.icon}
+            </span>
+            <span>{item.label}</span>
+          </div>
+          {item.badge !== undefined && item.badge > 0 && (
+            <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
+              isActive
+                ? isDark ? 'bg-[#1A1714]/30 text-[#1A1714]' : 'bg-white/25 text-white'
+                : isDark ? 'bg-[#3A3028] text-[#CDB891]' : 'bg-[#F7E7CE] text-[#8C7355]'
+            }`}>
+              {item.badge}
+            </span>
+          )}
+        </button>
+      </li>
+    );
+  };
+
+  const labelClass = `text-[10px] font-semibold tracking-widest uppercase px-2 mb-2 block ${
+    isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'
+  }`;
+
   return (
-    <aside className="hidden md:flex flex-col w-64 border-r border-[#E8DACD] bg-[#FAF0E6] h-screen sticky top-0 px-5 py-6 select-none shrink-0 z-20">
+    <aside className={`hidden md:flex flex-col w-64 border-r h-screen sticky top-0 px-5 py-6 select-none shrink-0 z-20 transition-colors duration-300 ${
+      isDark
+        ? 'bg-[#1E1B18] border-[#332D28]'
+        : 'bg-[#FAF0E6] border-[#E8DACD]'
+    }`}>
       {/* Brand Logo */}
       <div 
         onClick={() => navigateTo('home')}
@@ -45,47 +101,15 @@ export const Sidebar: React.FC = () => {
       {/* Main Navigation */}
       <nav className="flex-1 space-y-6 overflow-y-auto pr-1">
         <div>
-          <span className="text-[10px] font-semibold text-[#8C7B73] tracking-widest uppercase px-2 mb-2 block">
-            Library
-          </span>
+          <span className={labelClass}>Library</span>
           <ul className="space-y-1">
-            {mainNav.map((item) => {
-              const isActive = currentView === item.id;
-              return (
-                <li key={item.id}>
-                  <button
-                    onClick={() => navigateTo(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
-                        : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={isActive ? 'text-[#FFF8E7]' : 'text-[#8C7355]'}>
-                        {item.icon}
-                      </span>
-                      <span>{item.label}</span>
-                    </div>
-                    {item.badge !== undefined && item.badge > 0 && (
-                      <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                        isActive ? 'bg-[#2C2421] text-[#FFF8E7]' : 'bg-[#F7E7CE] text-[#8C7355]'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                </li>
-              );
-            })}
+            {mainNav.map(renderNavItem)}
           </ul>
         </div>
 
         {/* Secondary Navigation */}
         <div>
-          <span className="text-[10px] font-semibold text-[#8C7B73] tracking-widest uppercase px-2 mb-2 block">
-            Personal Space
-          </span>
+          <span className={labelClass}>Personal Space</span>
           <ul className="space-y-1">
             {secondaryNav.map((item) => {
               const isActive = currentView === item.id;
@@ -93,23 +117,38 @@ export const Sidebar: React.FC = () => {
                 <li key={item.id}>
                   <button
                     onClick={() => navigateTo(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
-                        : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
+                      isActive
+                        ? isDark
+                          ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
+                          : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
+                        : isDark
+                          ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
+                          : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className={isActive ? 'text-[#FFF8E7]' : 'text-[#8C7355]'}>
+                    {isActive && (
+                      <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
+                        isDark ? 'bg-[#1A1714]' : 'bg-white/60'
+                      }`} />
+                    )}
+                    <div className="flex items-center gap-3 pl-1">
+                      <span className={
+                        isActive
+                          ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
+                          : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
+                      }>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
                     </div>
-                    {item.label === 'Uploaded Books' && uploadedBooks.length > 0 && (
+                    {item.badge !== undefined && item.badge > 0 && (
                       <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                        isActive ? 'bg-[#2C2421] text-[#FFF8E7]' : 'bg-[#F7E7CE] text-[#8C7355]'
+                        isActive
+                          ? isDark ? 'bg-[#1A1714]/30 text-[#1A1714]' : 'bg-white/25 text-white'
+                          : isDark ? 'bg-[#3A3028] text-[#CDB891]' : 'bg-[#F7E7CE] text-[#8C7355]'
                       }`}>
-                        {uploadedBooks.length}
+                        {item.badge}
                       </span>
                     )}
                   </button>
@@ -121,42 +160,75 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Editorial Quote Card */}
-      <div className="my-3 p-3.5 rounded-xl bg-[#F7E7CE] border border-[#CDB891]/60 shadow-xs">
-        <span className="text-[10px] font-semibold text-[#8C7355] uppercase tracking-wider block mb-1">
+      <div className={`my-3 p-3.5 rounded-xl border shadow-xs ${
+        isDark 
+          ? 'bg-[#2D2822] border-[#4A3E35]/60' 
+          : 'bg-[#F7E7CE] border-[#CDB891]/60'
+      }`}>
+        <span className="text-[10px] font-semibold text-[#CDB891] uppercase tracking-wider block mb-1">
           Daily Reflection
         </span>
-        <p className="text-[12px] font-serif italic text-[#2C2421] leading-relaxed">
+        <p className={`text-[12px] font-serif italic leading-relaxed ${
+          isDark ? 'text-[#C4AD99]' : 'text-[#2C2421]'
+        }`}>
           "A room without books is like a body without a soul."
         </p>
       </div>
 
       {/* BINUS University Logo Badge */}
-      <div className="px-2 py-2 flex items-center gap-2 border-t border-[#E8DACD]/60 my-1">
+      <div className={`px-2 py-2 flex items-center gap-2 border-t my-1 ${
+        isDark ? 'border-[#332D28]/60' : 'border-[#E8DACD]/60'
+      }`}>
         <img src="/binus.png" alt="Binus University" className="h-7 object-contain rounded-md" />
-        <span className="text-[10px] font-semibold text-[#8C7B73] leading-tight">
+        <span className={`text-[10px] font-semibold leading-tight ${
+          isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'
+        }`}>
           BINUS University
         </span>
       </div>
 
       {/* Bottom Profile & Settings */}
-      <div className="pt-2 border-t border-[#E8DACD] space-y-1">
+      <div className={`pt-2 border-t space-y-1 ${isDark ? 'border-[#332D28]' : 'border-[#E8DACD]'}`}>
         <button
           onClick={() => navigateTo('settings')}
-          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-            currentView === 'settings' 
-              ? 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md' 
-              : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
+          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative cursor-pointer ${
+            currentView === 'settings'
+              ? isDark
+                ? 'bg-[#CDB891] text-[#1A1714] font-semibold shadow-md'
+                : 'bg-[#8C7355] text-[#FFF8E7] font-semibold shadow-md'
+              : isDark
+                ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
+                : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
           }`}
         >
-          <Settings size={18} className={currentView === 'settings' ? 'text-[#FFF8E7]' : 'text-[#8C7355]'} />
-          <span>Settings</span>
+          {currentView === 'settings' && (
+            <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full ${
+              isDark ? 'bg-[#1A1714]' : 'bg-white/60'
+            }`} />
+          )}
+          <div className="flex items-center gap-3 pl-1">
+            <Settings size={18} className={
+              currentView === 'settings'
+                ? isDark ? 'text-[#1A1714]' : 'text-[#FFF8E7]'
+                : isDark ? 'text-[#CDB891]' : 'text-[#8C7355]'
+            } />
+            <span>Settings</span>
+          </div>
         </button>
 
-        <div className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl bg-[#FAEBD7]/70 text-[#2C2421]">
-          <UserCircle2 size={32} className="text-[#8C7355]" />
+        <div className={`flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl border ${
+          isDark
+            ? 'bg-[#2A2420] border-[#332D28] text-[#EDE0D4]'
+            : 'bg-[#FAEBD7]/70 border-transparent text-[#2C2421]'
+        }`}>
+          <UserCircle2 size={30} className="text-[#CDB891] shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-[#2C2421] truncate">Eleanor Vance</p>
-            <p className="text-[10px] text-[#8C7B73] truncate">Avid Reader</p>
+            <p className={`text-xs font-semibold truncate ${isDark ? 'text-[#EDE0D4]' : 'text-[#2C2421]'}`}>
+              Eleanor Vance
+            </p>
+            <p className={`text-[10px] truncate ${isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'}`}>
+              Avid Reader
+            </p>
           </div>
         </div>
       </div>

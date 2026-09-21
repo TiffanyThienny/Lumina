@@ -60,11 +60,10 @@ const AppContent: React.FC = () => {
   const isReaderView = currentView === 'reader';
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${
-      appTheme === 'dark' 
-        ? 'bg-[#1C1816] text-[#E8DED2] theme-dark' 
-        : 'bg-[#FFF8E7] text-[#2C2421]'
-    }`}>
+    <div 
+      className={`flex min-h-screen transition-colors duration-300 ${appTheme === 'dark' ? 'dark-mode' : ''}`}
+      data-theme={appTheme}
+    >
       {/* Desktop Left Sidebar */}
       {!isReaderView && <Sidebar />}
 

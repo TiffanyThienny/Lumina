@@ -38,10 +38,10 @@ input, select, textarea {
     --color-text-light: #FAF0E6;
 
     /* Core UI Background & Surfaces */
-    --bg-app: #FFF8E7; /* Cosmic Latte default bg */
-    --bg-surface: #FAF0E6; /* Linen */
-    --bg-surface-subtle: #FAEBD7; /* Antique White */
-    --bg-accent-soft: #F7E7CE; /* Champagne */
+    --bg-app: #FFF8E7;
+    --bg-surface: #FAF0E6;
+    --bg-surface-subtle: #FAEBD7;
+    --bg-accent-soft: #F7E7CE;
     --border-warm: #E8DACD;
     --border-strong: #CDB891;
 
@@ -240,3 +240,119 @@ mark.highlight-rose {
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ================================================================
+   DARK MODE — Comprehensive overrides
+   Applied via [data-theme="dark"] on root div in App.tsx
+   ================================================================ */
+
+[data-theme="dark"] {
+  --bg-app: #1A1714;
+  --bg-surface: #221E1B;
+  --bg-surface-subtle: #2B2622;
+  --bg-accent-soft: #342A20;
+  --border-warm: #3D3530;
+  --border-strong: #5A4C42;
+  --color-text-primary: #EDE0D4;
+  --color-text-secondary: #C4AD99;
+  --color-text-muted: #8A7A6F;
+  background-color: #1A1714;
+  color: #EDE0D4;
+}
+
+/* Headings in dark mode */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5 {
+  color: #EDE0D4;
+}
+
+/* Editorial tag in dark mode */
+[data-theme="dark"] .editorial-tag {
+  background: linear-gradient(135deg, #3A2F24 0%, #2E2720 100%);
+  color: #CDB891;
+  border-color: rgba(205, 184, 145, 0.3);
+}
+
+/* Editorial divider dark */
+[data-theme="dark"] .editorial-divider {
+  background: linear-gradient(90deg, transparent, #3D3530 15%, #3D3530 85%, transparent);
+}
+
+/* Dark mode scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #4A3F38; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #5A4C42; }
+
+/* ===== SURFACE BACKGROUND OVERRIDES ===== */
+[data-theme="dark"] .bg-\[\#FAF0E6\] { background-color: #231F1C !important; }
+[data-theme="dark"] .bg-\[\#FFF8E7\] { background-color: #1F1C19 !important; }
+[data-theme="dark"] .bg-\[\#FAEBD7\] { background-color: #2B2622 !important; }
+[data-theme="dark"] .bg-\[\#F7E7CE\] { background-color: #302820 !important; }
+[data-theme="dark"] .bg-\[\#FFE4C4\] { background-color: #3A2E22 !important; }
+[data-theme="dark"] .bg-\[\#E8DACD\] { background-color: #3D3530 !important; }
+
+/* Gradient hero bg override */
+[data-theme="dark"] .from-\[\#FAF0E6\] { --tw-gradient-from: #231F1C var(--tw-gradient-from-position) !important; }
+[data-theme="dark"] .via-\[\#FAEBD7\] { --tw-gradient-via: #2B2622 var(--tw-gradient-via-position) !important; }
+[data-theme="dark"] .to-\[\#F7E7CE\] { --tw-gradient-to: #302820 var(--tw-gradient-to-position) !important; }
+
+/* Hover state overrides */
+[data-theme="dark"] .hover\:bg-\[\#F7E7CE\]:hover { background-color: #302820 !important; }
+[data-theme="dark"] .hover\:bg-\[\#FAEBD7\]:hover { background-color: #2B2622 !important; }
+[data-theme="dark"] .hover\:bg-\[\#FAF0E6\]:hover { background-color: #2D2823 !important; }
+[data-theme="dark"] .hover\:bg-\[\#CDB891\]:hover { background-color: #5C4E43 !important; }
+[data-theme="dark"] .hover\:bg-\[\#4A3E3D\]:hover { background-color: #3A3330 !important; }
+
+/* ===== TEXT COLOR OVERRIDES ===== */
+[data-theme="dark"] .text-\[\#2C2421\] { color: #EDE0D4 !important; }
+[data-theme="dark"] .text-\[\#5E504A\] { color: #C4AD99 !important; }
+[data-theme="dark"] .text-\[\#8C7B73\] { color: #8A7A6F !important; }
+[data-theme="dark"] .text-\[\#342823\] { color: #EDE0D4 !important; }
+[data-theme="dark"] .hover\:text-\[\#2C2421\]:hover { color: #EDE0D4 !important; }
+[data-theme="dark"] .hover\:text-\[\#FAF0E6\]:hover { color: #EDE0D4 !important; }
+
+/* ===== BORDER COLOR OVERRIDES ===== */
+[data-theme="dark"] .border-\[\#E8DACD\] { border-color: #3D3530 !important; }
+[data-theme="dark"] .border-\[\#CDB891\] { border-color: #5A4C42 !important; }
+[data-theme="dark"] .border-\[\#E8DACD\]\/70 { border-color: rgba(61, 53, 48, 0.7) !important; }
+[data-theme="dark"] .border-\[\#CDB891\]\/40 { border-color: rgba(90, 76, 66, 0.4) !important; }
+[data-theme="dark"] .border-\[\#CDB891\]\/60 { border-color: rgba(90, 76, 66, 0.6) !important; }
+[data-theme="dark"] .border-\[\#E8DACD\]\/60 { border-color: rgba(61, 53, 48, 0.6) !important; }
+[data-theme="dark"] .border-\[\#4A3E3D\] { border-color: #3D3530 !important; }
+
+/* ===== DARK BUTTONS THAT SHOULD STAY DARK ===== */
+/* bg-[#2C2421] stays dark — it's already the right look in dark mode */
+
+/* ===== INPUT FIELDS IN DARK MODE ===== */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  color: #EDE0D4;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #6A5C54 !important;
+}
+
+/* ===== SHADOW OVERRIDES IN DARK MODE ===== */
+[data-theme="dark"] .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7) !important; }
+[data-theme="dark"] .shadow-md { box-shadow: 0 4px 16px -2px rgba(0,0,0,0.5) !important; }
+[data-theme="dark"] .shadow-sm { box-shadow: 0 1px 4px 0 rgba(0,0,0,0.4) !important; }
+
+/* ===== PROGRESS BARS / ACCENT COLORS ===== */
+/* These typically use #8C7355 or CDB891 and look fine in dark mode */
+
+/* ===== RECENTLY OPENED SECTION ===== */
+[data-theme="dark"] .bg-\[\#FAF0E6\].p-6,
+[data-theme="dark"] .bg-\[\#FAF0E6\].p-8 {
+  background-color: #231F1C !important;
+}
+
+/* Dark mode book cover hover */
+[data-theme="dark"] .hover\:border-\[\#CDB891\]:hover { border-color: #5A4C42 !important; }
+[data-theme="dark"] .hover\:shadow-md:hover { box-shadow: 0 4px 16px -2px rgba(0,0,0,0.5) !important; }
+
+/* Dashed borders in upload section */
+[data-theme="dark"] .border-dashed.border-\[\#CDB891\] { border-color: #5A4C42 !important; }
