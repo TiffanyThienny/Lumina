@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   BookOpen, 
-  Sparkles, 
+  FileText,
+  Headphones, 
   Volume2, 
   Heart, 
   ChevronRight, 
@@ -99,8 +100,8 @@ export const BookDetailPage: React.FC = () => {
               onClick={() => navigateTo('ai-summary', book.id)}
               className="px-5 py-3 rounded-full bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] border border-[#CDB891]/40 text-xs font-medium transition-smooth flex items-center gap-2 cursor-pointer"
             >
-              <Sparkles size={16} />
-              <span>Read AI Summary</span>
+              <FileText size={16} />
+              <span>Read Summary</span>
             </button>
 
             <button
@@ -108,7 +109,7 @@ export const BookDetailPage: React.FC = () => {
               className="px-5 py-3 rounded-full bg-[#FAF0E6] text-[#5E504A] hover:bg-[#FAEBD7] border border-[#E8DACD] text-xs font-medium transition-smooth flex items-center gap-2 cursor-pointer"
             >
               <MessageSquare size={16} className="text-[#8C7355]" />
-              <span>Ask AI</span>
+              <span>Ask Assistant</span>
             </button>
 
             {/* TTS Options: Full Book vs Summary Audio */}
@@ -123,11 +124,11 @@ export const BookDetailPage: React.FC = () => {
                   <span>Full Audio</span>
                 </button>
                 <button
-                  onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (AI Summary)`)}
+                  onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (Summary Audio)`)}
                   className="px-3.5 py-2 rounded-full hover:bg-[#F7E7CE] text-[#8C7355] text-xs font-semibold transition-smooth flex items-center gap-1.5 cursor-pointer"
-                  title="Listen AI Summary Audio"
+                  title="Listen Summary Audio"
                 >
-                  <Sparkles size={14} />
+                  <Headphones size={15} />
                   <span>Summary Audio</span>
                 </button>
               </div>
@@ -162,7 +163,7 @@ export const BookDetailPage: React.FC = () => {
               }`}
             >
               {tab === 'book' && 'Book Details'}
-              {tab === 'summary' && 'AI Summary Preview'}
+              {tab === 'summary' && 'Summary Preview'}
               {tab === 'chapters' && `Chapters (${book.chapters.length})`}
               {tab === 'audio' && 'Audiobook'}
             </button>
@@ -205,9 +206,9 @@ export const BookDetailPage: React.FC = () => {
           <div className="space-y-6 bg-[#FAF0E6] p-6 sm:p-8 rounded-3xl border border-[#E8DACD]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles size={18} className="text-[#8C7355]" />
+                <FileText size={18} className="text-[#8C7355]" />
                 <h3 className="font-serif text-xl font-semibold text-[#2C2421]">
-                  AI Key Takeaways
+                  Key Takeaways
                 </h3>
               </div>
               <button
@@ -241,9 +242,10 @@ export const BookDetailPage: React.FC = () => {
 
             <button
               onClick={() => navigateTo('ai-summary', book.id)}
-              className="w-full py-3 rounded-xl bg-[#8C7355] text-[#FFF8E7] hover:bg-[#755F43] text-xs font-semibold transition-smooth text-center cursor-pointer"
+              className="w-full py-3 rounded-xl bg-[#8C7355] text-[#FFF8E7] hover:bg-[#755F43] text-xs font-semibold transition-smooth text-center cursor-pointer flex items-center justify-center gap-2"
             >
-              Read Full Detailed AI Summary
+              <FileText size={15} />
+              <span>Read Detailed Summary</span>
             </button>
           </div>
         )}
@@ -296,7 +298,7 @@ export const BookDetailPage: React.FC = () => {
                 Narrated Audio Experience
               </h3>
               <p className="text-xs text-[#5E504A]">
-                Full Duration: {book.audioDuration || '3 hrs 45 mins'} • AI Summary Duration: ~7 mins • Elunè TTS Engine
+                Full Duration: {book.audioDuration || '3 hrs 45 mins'} • Summary Duration: ~7 mins • Elunè Audio Engine
               </p>
             </div>
 
@@ -310,11 +312,11 @@ export const BookDetailPage: React.FC = () => {
               </button>
 
               <button
-                onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (AI Summary)`)}
+                onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (Summary Audio)`)}
                 className="px-8 py-3.5 rounded-full bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer border border-[#CDB891]/50"
               >
-                <Sparkles size={16} />
-                <span>Listen AI Summary Audio</span>
+                <Headphones size={16} />
+                <span>Listen Summary Audio</span>
               </button>
             </div>
           </div>

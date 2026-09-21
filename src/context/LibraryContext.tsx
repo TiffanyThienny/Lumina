@@ -30,6 +30,7 @@ interface LibraryContextType {
   playAudioTrack: (book: Book, type: 'book' | 'chapter' | 'summary', title?: string) => void;
   toggleAudioPlayPause: () => void;
   setAudioSpeed: (speed: 0.75 | 1 | 1.25 | 1.5 | 2) => void;
+  seekAudio: (time: number) => void;
   openAudioModal: () => void;
   closeAudioModal: () => void;
   setSearchQuery: (query: string) => void;
@@ -206,10 +207,49 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   };
 
+  // HTML5 Audio ref for real playback
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  React.useEffect(() => {
+    // Royalty-free audio MP3 stream (ambient relaxation / narration sample)
+    const audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3');
+    audioRef.current = audio;
+
+    const handleTimeUpdate = () => {
+      if (audio) {
+        setAudioState(prev => ({
+          ...prev,
+          currentTime: audio.currentTime,
+          duration: audio.duration && !isNaN(audio.duration) && audio.duration > 0 ? audio.duration : prev.duration
+        }));
+      }
+    };
+
+    const handleEnded = () => {
+      setAudioState(prev => ({ ...prev, isPlaying: false, currentTime: 0 }));
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.pause();
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   const playAudioTrack = (book: Book, type: 'book' | 'chapter' | 'summary', title?: string) => {
     const cleanTitle = book.title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
     const isSummary = type === 'summary';
-    const trackName = title ? title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ') : (isSummary ? `${cleanTitle} (AI Summary)` : `${cleanTitle} (Full Book)`);
+    const trackName = title ? title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ') : (isSummary ? `${cleanTitle} (Summary Audio)` : `${cleanTitle} (Full Book)`);
+
+    if (audioRef.current) {
+      audioRef.current.playbackRate = audioState.speed;
+      audioRef.current.play().catch(err => {
+        console.log('Audio autoplay info:', err);
+      });
+    }
 
     setAudioState({
       isPlaying: true,
@@ -217,8 +257,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       bookTitle: cleanTitle,
       bookId: book.id,
       coverBg: book.coverBg,
-      currentTime: 14,
-      duration: isSummary ? 420 : 1200,
+      currentTime: audioRef.current ? audioRef.current.currentTime : 0,
+      duration: audioRef.current && audioRef.current.duration ? audioRef.current.duration : (isSummary ? 240 : 600),
       speed: audioState.speed,
       isModalOpen: false,
       type
@@ -226,11 +266,28 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const toggleAudioPlayPause = () => {
+    if (audioRef.current) {
+      if (audioState.isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(err => console.log('Audio play error:', err));
+      }
+    }
     setAudioState(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
   };
 
   const setAudioSpeed = (speed: 0.75 | 1 | 1.25 | 1.5 | 2) => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = speed;
+    }
     setAudioState(prev => ({ ...prev, speed }));
+  };
+
+  const seekAudio = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+    }
+    setAudioState(prev => ({ ...prev, currentTime: time }));
   };
 
   const openAudioModal = () => {
@@ -269,6 +326,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         playAudioTrack,
         toggleAudioPlayPause,
         setAudioSpeed,
+        seekAudio,
         openAudioModal,
         closeAudioModal,
         setSearchQuery

@@ -90,7 +90,8 @@ export const Sidebar: React.FC = () => {
   const isSettingsActive = currentView === 'settings';
 
   return (
-    <aside className={`hidden md:flex flex-col w-64 border-r h-screen sticky top-0 px-5 py-6 select-none shrink-0 z-20 transition-colors duration-300 ${
+  return (
+    <aside className={`hidden md:flex flex-col w-64 border-r h-screen sticky top-0 px-4 py-4 select-none shrink-0 z-20 transition-colors duration-300 justify-between ${
       isDark
         ? 'bg-[#1E1B18] border-[#332D28]'
         : 'bg-[#FAF0E6] border-[#E8DACD]'
@@ -98,13 +99,13 @@ export const Sidebar: React.FC = () => {
       {/* Brand Logo */}
       <div 
         onClick={() => navigateTo('home')}
-        className="mb-8 cursor-pointer px-1 group transition-transform hover:scale-102"
+        className="mb-3 cursor-pointer px-1 group transition-transform hover:scale-102 shrink-0"
       >
         <LuminaLogo size="md" showText={true} />
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 space-y-6 overflow-y-auto pr-1">
+      <nav className="flex-1 space-y-2.5 overflow-hidden flex flex-col justify-start">
         <div>
           <span className={labelClass}>Library</span>
           <ul className="space-y-0.5">
@@ -121,67 +122,70 @@ export const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Editorial Quote Card */}
-      <div className={`my-3 p-3.5 rounded-xl border ${
-        isDark 
-          ? 'bg-[#2D2822] border-[#4A3E35]/60' 
-          : 'bg-[#F7E7CE] border-[#CDB891]/60'
-      }`}>
-        <span className="text-[10px] font-semibold text-[#CDB891] uppercase tracking-wider block mb-1">
-          Daily Reflection
-        </span>
-        <p className={`text-[12px] font-serif italic leading-relaxed ${
-          isDark ? 'text-[#C4AD99]' : 'text-[#2C2421]'
+      {/* Bottom Fixed Footer Section */}
+      <div className="shrink-0 space-y-2 pt-2 border-t border-transparent">
+        {/* Editorial Quote Card */}
+        <div className={`p-2.5 rounded-xl border ${
+          isDark 
+            ? 'bg-[#2D2822] border-[#4A3E35]/60' 
+            : 'bg-[#F7E7CE] border-[#CDB891]/60'
         }`}>
-          "A room without books is like a body without a soul."
-        </p>
-      </div>
-
-      {/* BINUS University Logo Badge */}
-      <div className={`px-2 py-2 flex items-center gap-2 border-t my-1 ${
-        isDark ? 'border-[#332D28]/60' : 'border-[#E8DACD]/60'
-      }`}>
-        <img src="/binus.png" alt="Binus University" className="h-7 object-contain rounded-md" />
-        <span className={`text-[10px] font-semibold leading-tight ${
-          isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'
-        }`}>
-          BINUS University
-        </span>
-      </div>
-
-      {/* Bottom Profile & Settings */}
-      <div className={`pt-2 border-t space-y-1 ${isDark ? 'border-[#332D28]' : 'border-[#E8DACD]'}`}>
-        <button
-          onClick={() => navigateTo('settings')}
-          style={isSettingsActive ? { backgroundColor: activeBg, color: activeText } : undefined}
-          className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
-            isSettingsActive
-              ? 'font-semibold shadow-md'
-              : isDark
-                ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
-                : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
-          }`}
-        >
-          <span style={isSettingsActive ? { color: activeIcon } : undefined}
-            className={!isSettingsActive ? (isDark ? 'text-[#CDB891]' : 'text-[#8C7355]') : ''}>
-            <Settings size={18} />
+          <span className="text-[9px] font-semibold text-[#CDB891] uppercase tracking-wider block mb-0.5">
+            Daily Reflection
           </span>
-          <span>Settings</span>
-        </button>
+          <p className={`text-[11px] font-serif italic leading-snug ${
+            isDark ? 'text-[#C4AD99]' : 'text-[#2C2421]'
+          }`}>
+            "A room without books is like a body without a soul."
+          </p>
+        </div>
 
-        <div className={`flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl border ${
-          isDark
-            ? 'bg-[#2A2420] border-[#332D28] text-[#EDE0D4]'
-            : 'bg-[#FAEBD7]/70 border-transparent text-[#2C2421]'
+        {/* BINUS University Logo Badge */}
+        <div className={`px-2 py-1 flex items-center gap-2 border-t ${
+          isDark ? 'border-[#332D28]/60' : 'border-[#E8DACD]/60'
         }`}>
-          <UserCircle2 size={30} className="text-[#CDB891] shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className={`text-xs font-semibold truncate ${isDark ? 'text-[#EDE0D4]' : 'text-[#2C2421]'}`}>
-              Eleanor Vance
-            </p>
-            <p className={`text-[10px] truncate ${isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'}`}>
-              Avid Reader
-            </p>
+          <img src="/binus.png" alt="Binus University" className="h-6 object-contain rounded-md" />
+          <span className={`text-[10px] font-semibold leading-tight ${
+            isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'
+          }`}>
+            BINUS University
+          </span>
+        </div>
+
+        {/* Bottom Profile & Settings */}
+        <div className={`pt-1.5 border-t space-y-1 ${isDark ? 'border-[#332D28]' : 'border-[#E8DACD]'}`}>
+          <button
+            onClick={() => navigateTo('settings')}
+            style={isSettingsActive ? { backgroundColor: activeBg, color: activeText } : undefined}
+            className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
+              isSettingsActive
+                ? 'font-semibold shadow-md'
+                : isDark
+                  ? 'text-[#C4AD99] hover:bg-[#2D2823] hover:text-[#EDE0D4]'
+                  : 'text-[#5E504A] hover:bg-[#F7E7CE] hover:text-[#2C2421]'
+            }`}
+          >
+            <span style={isSettingsActive ? { color: activeIcon } : undefined}
+              className={!isSettingsActive ? (isDark ? 'text-[#CDB891]' : 'text-[#8C7355]') : ''}>
+              <Settings size={16} />
+            </span>
+            <span>Settings</span>
+          </button>
+
+          <div className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl border ${
+            isDark
+              ? 'bg-[#2A2420] border-[#332D28] text-[#EDE0D4]'
+              : 'bg-[#FAEBD7]/70 border-transparent text-[#2C2421]'
+          }`}>
+            <UserCircle2 size={26} className="text-[#CDB891] shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className={`text-xs font-semibold truncate ${isDark ? 'text-[#EDE0D4]' : 'text-[#2C2421]'}`}>
+                Eleanor Vance
+              </p>
+              <p className={`text-[10px] truncate ${isDark ? 'text-[#6A5C54]' : 'text-[#8C7B73]'}`}>
+                Avid Reader
+              </p>
+            </div>
           </div>
         </div>
       </div>

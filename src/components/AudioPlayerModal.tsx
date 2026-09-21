@@ -1,9 +1,17 @@
 import React from 'react';
-import { X, Play, Pause, SkipBack, SkipForward, Volume2, Gauge, BookOpen, Sparkles } from 'lucide-react';
+import { X, Play, Pause, SkipBack, SkipForward, Volume2, Gauge, BookOpen, Headphones } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 
 export const AudioPlayerModal: React.FC = () => {
-  const { audioState, closeAudioModal, toggleAudioPlayPause, setAudioSpeed, playAudioTrack, activeBook } = useLibrary();
+  const { 
+    audioState, 
+    closeAudioModal, 
+    toggleAudioPlayPause, 
+    setAudioSpeed, 
+    playAudioTrack, 
+    seekAudio,
+    activeBook 
+  } = useLibrary();
 
   if (!audioState.isModalOpen) return null;
 
@@ -11,9 +19,17 @@ export const AudioPlayerModal: React.FC = () => {
   const cleanTrackTitle = (audioState.trackTitle || '').replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
 
   const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  const handleScrubberClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickPosition = (e.clientX - rect.left) / rect.width;
+    const newTime = clickPosition * audioState.duration;
+    seekAudio(newTime);
   };
 
   const speedOptions: (0.75 | 1 | 1.25 | 1.5 | 2)[] = [0.75, 1, 1.25, 1.5, 2];
@@ -36,7 +52,7 @@ export const AudioPlayerModal: React.FC = () => {
           </span>
         </div>
 
-        {/* Text-to-Speech Mode Options: Full Book vs Summary */}
+        {/* Audio Mode Options: Full Book vs Summary Audio */}
         <div className="flex items-center justify-center gap-2 mb-6 bg-[#1F1917] p-1.5 rounded-2xl border border-[#3A322D]">
           <button
             onClick={() => {
@@ -57,7 +73,7 @@ export const AudioPlayerModal: React.FC = () => {
           <button
             onClick={() => {
               if (activeBook) {
-                playAudioTrack(activeBook, 'summary', `${activeBook.title} (AI Summary)`);
+                playAudioTrack(activeBook, 'summary', `${activeBook.title} (Summary Audio)`);
               }
             }}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-smooth flex items-center justify-center gap-1.5 cursor-pointer ${
@@ -66,8 +82,8 @@ export const AudioPlayerModal: React.FC = () => {
                 : 'text-[#8C7B73] hover:text-[#FAF0E6]'
             }`}
           >
-            <Sparkles size={14} />
-            <span>AI Summary</span>
+            <Headphones size={14} />
+            <span>Summary Audio</span>
           </button>
         </div>
 
@@ -89,18 +105,21 @@ export const AudioPlayerModal: React.FC = () => {
           <h3 className="font-serif text-lg sm:text-xl font-semibold text-[#FAF0E6] mb-1 leading-snug break-words">
             {cleanTrackTitle}
           </h3>
-          <p className="text-xs text-[#CDB891] flex items-center justify-center gap-1">
-            <Sparkles size={12} />
-            <span>Elunè Text-to-Speech Narrator</span>
+          <p className="text-xs text-[#CDB891] flex items-center justify-center gap-1.5">
+            <Headphones size={13} />
+            <span>Elunè Narrator</span>
           </p>
         </div>
 
-        {/* Scrubber Bar */}
+        {/* Interactive Scrubber Bar */}
         <div className="space-y-2 mb-6">
-          <div className="w-full h-1.5 bg-[#3A322D] rounded-full overflow-hidden relative cursor-pointer">
+          <div 
+            onClick={handleScrubberClick}
+            className="w-full h-2.5 bg-[#3A322D] rounded-full overflow-hidden relative cursor-pointer group"
+          >
             <div 
-              className="h-full bg-[#CDB891] rounded-full transition-all duration-300"
-              style={{ width: `${(audioState.currentTime / audioState.duration) * 100}%` }}
+              className="h-full bg-[#CDB891] rounded-full transition-all duration-150 group-hover:bg-[#F7E7CE]"
+              style={{ width: `${Math.min(100, (audioState.currentTime / (audioState.duration || 1)) * 100)}%` }}
             />
           </div>
           <div className="flex justify-between text-[11px] text-[#8C7B73] font-mono">
@@ -111,7 +130,11 @@ export const AudioPlayerModal: React.FC = () => {
 
         {/* Playback Controls */}
         <div className="flex items-center justify-center gap-6 mb-8">
-          <button className="text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer">
+          <button 
+            onClick={() => seekAudio(Math.max(0, audioState.currentTime - 10))}
+            className="text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer"
+            title="Rewind 10s"
+          >
             <SkipBack size={24} />
           </button>
 
@@ -122,7 +145,11 @@ export const AudioPlayerModal: React.FC = () => {
             {audioState.isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
           </button>
 
-          <button className="text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer">
+          <button 
+            onClick={() => seekAudio(Math.min(audioState.duration, audioState.currentTime + 10))}
+            className="text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer"
+            title="Forward 10s"
+          >
             <SkipForward size={24} />
           </button>
         </div>
