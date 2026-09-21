@@ -27,7 +27,7 @@ interface LibraryContextType {
   deleteHighlight: (id: string) => void;
   updateReaderSettings: (newSettings: Partial<ReaderSettings>) => void;
   updateReadingProgress: (bookId: string, chapterIndex: number, pageNumber: number, percent: number) => void;
-  playAudioTrack: (book: Book, type: 'book' | 'chapter' | 'summary', title?: string) => void;
+  playAudioTrack: (book: Book, type: 'book' | 'chapter' | 'summary', title?: string, textContent?: string) => void;
   toggleAudioPlayPause: () => void;
   setAudioSpeed: (speed: 0.75 | 1 | 1.25 | 1.5 | 2) => void;
   seekAudio: (time: number) => void;
@@ -208,48 +208,91 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   };
 
-  // HTML5 Audio ref for real playback
-  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  // Web Speech Synthesis & Timer Refs
+  const currentUtteranceRef = React.useRef<SpeechSynthesisUtterance | null>(null);
+  const speechTextRef = React.useRef<string>('');
+  const speechIntervalRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
-    // Royalty-free audio MP3 stream (ambient relaxation / narration sample)
-    const audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3');
-    audioRef.current = audio;
-
-    const handleTimeUpdate = () => {
-      if (audio) {
-        setAudioState(prev => ({
-          ...prev,
-          currentTime: audio.currentTime,
-          duration: audio.duration && !isNaN(audio.duration) && audio.duration > 0 ? audio.duration : prev.duration
-        }));
-      }
-    };
-
-    const handleEnded = () => {
-      setAudioState(prev => ({ ...prev, isPlaying: false, currentTime: 0 }));
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-
     return () => {
-      audio.pause();
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (speechIntervalRef.current) {
+        clearInterval(speechIntervalRef.current);
+      }
     };
   }, []);
 
-  const playAudioTrack = (book: Book, type: 'book' | 'chapter' | 'summary', title?: string) => {
+  const clearSpeechInterval = () => {
+    if (speechIntervalRef.current) {
+      clearInterval(speechIntervalRef.current);
+      speechIntervalRef.current = null;
+    }
+  };
+
+  const playAudioTrack = (
+    book: Book, 
+    type: 'book' | 'chapter' | 'summary', 
+    title?: string,
+    textContent?: string
+  ) => {
     const cleanTitle = book.title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
     const isSummary = type === 'summary';
-    const trackName = title ? title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ') : (isSummary ? `${cleanTitle} (Summary Audio)` : `${cleanTitle} (Full Book)`);
+    const trackName = title 
+      ? title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ') 
+      : (isSummary ? `${cleanTitle} (Summary Audio)` : `${cleanTitle} (Full Book)`);
 
-    if (audioRef.current) {
-      audioRef.current.playbackRate = audioState.speed;
-      audioRef.current.play().catch(err => {
-        console.log('Audio autoplay info:', err);
-      });
+    // Extract exact text to be read by TTS
+    let textToRead = textContent || '';
+    if (!textToRead) {
+      if (type === 'summary') {
+        textToRead = `${cleanTitle} summary. ${book.summary.quickOverview}. Main ideas: ${book.summary.mainIdeas.join('. ')}`;
+      } else if (type === 'chapter') {
+        const ch = book.chapters[0];
+        textToRead = `Chapter ${ch.number}: ${ch.title}. ${ch.content}`;
+      } else {
+        // Full book narration
+        textToRead = `${cleanTitle} by ${book.author}. ${book.chapters.map(c => `Chapter ${c.number}: ${c.title}. ${c.content}`).join(' ')}`;
+      }
+    }
+
+    speechTextRef.current = textToRead;
+
+    // Estimate duration based on word count (avg 150 words/min = 2.5 words/sec)
+    const wordsCount = textToRead.split(/\s+/).length;
+    const estimatedDuration = Math.max(30, Math.ceil(wordsCount / 2.5));
+
+    clearSpeechInterval();
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.rate = audioState.speed;
+      utterance.pitch = 1.0;
+      utterance.lang = 'en-US';
+
+      // Pick clear English voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const engVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel')));
+      if (engVoice) {
+        utterance.voice = engVoice;
+      }
+
+      utterance.onend = () => {
+        clearSpeechInterval();
+        setAudioState(prev => ({ ...prev, isPlaying: false, currentTime: 0 }));
+      };
+
+      utterance.onerror = (e) => {
+        console.log('Speech synthesis error:', e);
+        clearSpeechInterval();
+        setAudioState(prev => ({ ...prev, isPlaying: false }));
+      };
+
+      currentUtteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
     }
 
     setAudioState({
@@ -258,43 +301,69 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       bookTitle: cleanTitle,
       bookId: book.id,
       coverBg: book.coverBg,
-      currentTime: audioRef.current ? audioRef.current.currentTime : 0,
-      duration: audioRef.current && audioRef.current.duration ? audioRef.current.duration : (isSummary ? 240 : 600),
+      currentTime: 0,
+      duration: estimatedDuration,
       speed: audioState.speed,
       isModalOpen: false,
       type
     });
+
+    // Start progress timer
+    speechIntervalRef.current = window.setInterval(() => {
+      setAudioState(prev => {
+        if (!prev.isPlaying) return prev;
+        const nextTime = prev.currentTime + 1;
+        if (nextTime >= prev.duration) {
+          clearSpeechInterval();
+          return { ...prev, isPlaying: false, currentTime: 0 };
+        }
+        return { ...prev, currentTime: nextTime };
+      });
+    }, 1000);
   };
 
   const toggleAudioPlayPause = () => {
-    if (audioRef.current) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       if (audioState.isPlaying) {
-        audioRef.current.pause();
+        window.speechSynthesis.pause();
       } else {
-        audioRef.current.play().catch(err => console.log('Audio play error:', err));
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        } else if (currentUtteranceRef.current) {
+          window.speechSynthesis.speak(currentUtteranceRef.current);
+        }
       }
     }
     setAudioState(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
   };
 
   const setAudioSpeed = (speed: 0.75 | 1 | 1.25 | 1.5 | 2) => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = speed;
-    }
     setAudioState(prev => ({ ...prev, speed }));
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window && currentUtteranceRef.current) {
+      window.speechSynthesis.cancel();
+      const newUtterance = new SpeechSynthesisUtterance(speechTextRef.current);
+      newUtterance.rate = speed;
+      newUtterance.pitch = 1.0;
+      newUtterance.lang = 'en-US';
+
+      newUtterance.onend = () => {
+        clearSpeechInterval();
+        setAudioState(prev => ({ ...prev, isPlaying: false, currentTime: 0 }));
+      };
+
+      currentUtteranceRef.current = newUtterance;
+      window.speechSynthesis.speak(newUtterance);
+    }
   };
 
   const seekAudio = (time: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-    }
-    setAudioState(prev => ({ ...prev, currentTime: time }));
+    setAudioState(prev => ({ ...prev, currentTime: Math.max(0, Math.min(prev.duration, time)) }));
   };
 
   const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+    clearSpeechInterval();
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
     }
     setAudioState(prev => ({
       ...prev,

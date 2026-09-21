@@ -13,7 +13,9 @@ import {
   X,
   Highlighter,
   Copy,
-  Check
+  Check,
+  Volume2,
+  Headphones
 } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 
@@ -24,7 +26,10 @@ export const EBookReaderPage: React.FC = () => {
     readerSettings, 
     updateReaderSettings, 
     updateReadingProgress,
-    addHighlight 
+    addHighlight,
+    playAudioTrack,
+    audioState,
+    toggleAudioPlayPause
   } = useLibrary();
 
   const book = activeBook;
@@ -57,6 +62,7 @@ export const EBookReaderPage: React.FC = () => {
   ]);
 
   const currentChapter = book.chapters[currentChapterIndex] || book.chapters[0];
+  const isChapterAudioPlaying = audioState.isPlaying && audioState.bookId === book.id && audioState.type === 'chapter';
 
   // Font family mapping
   const fontClassMap = {
@@ -200,8 +206,29 @@ export const EBookReaderPage: React.FC = () => {
           <span className="truncate">Ch {currentChapter.number}: {currentChapter.title}</span>
         </button>
 
-        {/* Right: Actions (Search, Bookmark, Settings) */}
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Right: Actions (Audio, Search, Bookmark, Settings) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            onClick={() => {
+              if (isChapterAudioPlaying) {
+                toggleAudioPlayPause();
+              } else {
+                const chapterText = `Chapter ${currentChapter.number}. ${currentChapter.title}. ${currentChapter.content}`;
+                playAudioTrack(book, 'chapter', `Chapter ${currentChapter.number}: ${currentChapter.title}`, chapterText);
+              }
+            }}
+            className={`px-3 py-1.5 rounded-full border text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+              isChapterAudioPlaying
+                ? 'bg-[#2C2421] text-[#FFF8E7] border-[#8C7355] shadow-sm ring-2 ring-[#CDB891]'
+                : 'border-[var(--reader-border)] text-[var(--reader-text-muted)] hover:text-[var(--reader-text)] hover:bg-[var(--reader-surface)]'
+            }`}
+            title="Listen Chapter Narration"
+          >
+            <Volume2 size={16} className={isChapterAudioPlaying ? 'text-[#CDB891]' : 'text-[#8C7355]'} />
+            <span className="hidden sm:inline">{isChapterAudioPlaying ? 'Pause Audio' : 'Listen Chapter'}</span>
+            {isChapterAudioPlaying && <span className="w-1.5 h-1.5 rounded-full bg-[#CDB891] animate-pulse" />}
+          </button>
+
           <button
             onClick={() => setShowAIDrawer(true)}
             className="p-2 rounded-full text-[var(--reader-text-muted)] hover:text-[var(--reader-text)] transition-smooth cursor-pointer"
@@ -346,6 +373,30 @@ export const EBookReaderPage: React.FC = () => {
           <span className="text-xs text-[var(--reader-text-muted)] font-mono block">
             Reading time ~ {currentChapter.readingTime}
           </span>
+
+          {/* Chapter Audio Narration Button */}
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                if (isChapterAudioPlaying) {
+                  toggleAudioPlayPause();
+                } else {
+                  const chapterText = `Chapter ${currentChapter.number}. ${currentChapter.title}. ${currentChapter.content}`;
+                  playAudioTrack(book, 'chapter', `Chapter ${currentChapter.number}: ${currentChapter.title}`, chapterText);
+                }
+              }}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                isChapterAudioPlaying
+                  ? 'bg-[#2C2421] text-[#FFF8E7] border-[#8C7355] shadow-md ring-2 ring-[#CDB891]'
+                  : 'bg-[#FAF0E6] text-[#8C7355] border-[#E8DACD] hover:bg-[#F7E7CE]'
+              }`}
+              title="Listen to this chapter read aloud"
+            >
+              <Volume2 size={16} className={isChapterAudioPlaying ? 'text-[#CDB891]' : 'text-[#8C7355]'} />
+              <span>{isChapterAudioPlaying ? `Reading Chapter ${currentChapter.number} (Pause)` : `Listen Chapter ${currentChapter.number} Audio`}</span>
+              {isChapterAudioPlaying && <span className="w-2 h-2 rounded-full bg-[#CDB891] animate-pulse" />}
+            </button>
+          </div>
         </div>
 
         {/* Real Reading Content */}
