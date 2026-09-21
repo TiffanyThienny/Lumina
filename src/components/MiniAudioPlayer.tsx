@@ -3,7 +3,7 @@ import { Play, Pause, Volume2, Maximize2, X } from 'lucide-react';
 import { useLibrary } from '../context/LibraryContext';
 
 export const MiniAudioPlayer: React.FC = () => {
-  const { audioState, toggleAudioPlayPause, openAudioModal, currentView } = useLibrary();
+  const { audioState, toggleAudioPlayPause, stopAudio, openAudioModal, currentView } = useLibrary();
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   // Reset dismissal whenever a new track or book is played
@@ -67,9 +67,12 @@ export const MiniAudioPlayer: React.FC = () => {
 
         {/* Explicit Close X Button */}
         <button
-          onClick={() => setIsDismissed(true)}
+          onClick={() => {
+            stopAudio();
+            setIsDismissed(true);
+          }}
           className="p-1.5 text-[#8C7B73] hover:text-[#FAF0E6] transition-smooth cursor-pointer rounded-full hover:bg-[#3A322D]"
-          title="Close Audio Player"
+          title="Stop and Close Audio Player"
         >
           <X size={15} />
         </button>

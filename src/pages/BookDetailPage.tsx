@@ -20,7 +20,8 @@ export const BookDetailPage: React.FC = () => {
     toggleFavorite, 
     savedSummaryIds, 
     toggleSaveSummary, 
-    playAudioTrack 
+    playAudioTrack,
+    audioState
   } = useLibrary();
 
   const [activeTab, setActiveTab] = useState<'book' | 'summary' | 'chapters' | 'audio'>('book');
@@ -29,6 +30,10 @@ export const BookDetailPage: React.FC = () => {
   const isFav = favoriteIds.includes(book.id);
   const isSummarySaved = savedSummaryIds.includes(book.id);
   const cleanBookTitle = book.title.replace(/\.(pdf|epub)$/i, '').replace(/_/g, ' ');
+
+  const isBookAudioActive = audioState.bookId === book.id;
+  const isFullAudioActive = isBookAudioActive && audioState.type === 'book';
+  const isSummaryAudioActive = isBookAudioActive && audioState.type === 'summary';
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-10 animate-fade-in">
@@ -114,22 +119,36 @@ export const BookDetailPage: React.FC = () => {
 
             {/* TTS Options: Full Book vs Summary Audio */}
             {book.isAudioAvailable && (
-              <div className="flex items-center gap-1.5 bg-[#FAF0E6] p-1 rounded-full border border-[#E8DACD]">
+              <div className="flex items-center gap-1.5 bg-[#FAF0E6] p-1.5 rounded-full border border-[#E8DACD]">
                 <button
                   onClick={() => playAudioTrack(book, 'book', `${cleanBookTitle} (Full Book)`)}
-                  className="px-3.5 py-2 rounded-full hover:bg-[#F7E7CE] text-[#5E504A] text-xs font-medium transition-smooth flex items-center gap-1.5 cursor-pointer"
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                    isFullAudioActive
+                      ? 'bg-[#2C2421] text-[#FFF8E7] shadow-md ring-2 ring-[#CDB891]'
+                      : 'hover:bg-[#F7E7CE] text-[#5E504A]'
+                  }`}
                   title="Listen Full Book Audio"
                 >
-                  <Volume2 size={15} className="text-[#8C7355]" />
+                  <Volume2 size={15} className={isFullAudioActive ? 'text-[#CDB891]' : 'text-[#8C7355]'} />
                   <span>Full Audio</span>
+                  {isFullAudioActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#CDB891] animate-pulse ml-0.5" />
+                  )}
                 </button>
                 <button
                   onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (Summary Audio)`)}
-                  className="px-3.5 py-2 rounded-full hover:bg-[#F7E7CE] text-[#8C7355] text-xs font-semibold transition-smooth flex items-center gap-1.5 cursor-pointer"
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                    isSummaryAudioActive
+                      ? 'bg-[#2C2421] text-[#FFF8E7] shadow-md ring-2 ring-[#CDB891]'
+                      : 'hover:bg-[#F7E7CE] text-[#8C7355]'
+                  }`}
                   title="Listen Summary Audio"
                 >
-                  <Headphones size={15} />
+                  <Headphones size={15} className={isSummaryAudioActive ? 'text-[#CDB891]' : 'text-[#8C7355]'} />
                   <span>Summary Audio</span>
+                  {isSummaryAudioActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#CDB891] animate-pulse ml-0.5" />
+                  )}
                 </button>
               </div>
             )}
@@ -305,18 +324,28 @@ export const BookDetailPage: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <button
                 onClick={() => playAudioTrack(book, 'book', `${cleanBookTitle} (Full Book)`)}
-                className="px-8 py-3.5 rounded-full bg-[#2C2421] text-[#FFF8E7] hover:bg-[#4A3E3D] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer shadow-xs"
+                className={`px-8 py-3.5 rounded-full text-xs font-semibold transition-all duration-200 inline-flex items-center gap-2 cursor-pointer shadow-xs ${
+                  isFullAudioActive
+                    ? 'bg-[#2C2421] text-[#FFF8E7] shadow-lg ring-2 ring-[#CDB891]'
+                    : 'bg-[#FAF0E6] text-[#2C2421] hover:bg-[#F7E7CE] border border-[#E8DACD]'
+                }`}
               >
-                <Volume2 size={16} />
+                <Volume2 size={16} className={isFullAudioActive ? 'text-[#CDB891]' : 'text-[#8C7355]'} />
                 <span>Listen Full Book Narration</span>
+                {isFullAudioActive && <span className="w-2 h-2 rounded-full bg-[#CDB891] animate-pulse" />}
               </button>
 
               <button
                 onClick={() => playAudioTrack(book, 'summary', `${cleanBookTitle} (Summary Audio)`)}
-                className="px-8 py-3.5 rounded-full bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] text-xs font-semibold transition-smooth inline-flex items-center gap-2 cursor-pointer border border-[#CDB891]/50"
+                className={`px-8 py-3.5 rounded-full text-xs font-semibold transition-all duration-200 inline-flex items-center gap-2 cursor-pointer border ${
+                  isSummaryAudioActive
+                    ? 'bg-[#2C2421] text-[#FFF8E7] shadow-lg ring-2 ring-[#CDB891] border-[#CDB891]'
+                    : 'bg-[#F7E7CE] text-[#8C7355] hover:bg-[#CDB891] hover:text-[#2C2421] border-[#CDB891]/50'
+                }`}
               >
-                <Headphones size={16} />
+                <Headphones size={16} className={isSummaryAudioActive ? 'text-[#CDB891]' : ''} />
                 <span>Listen Summary Audio</span>
+                {isSummaryAudioActive && <span className="w-2 h-2 rounded-full bg-[#CDB891] animate-pulse" />}
               </button>
             </div>
           </div>

@@ -31,6 +31,7 @@ interface LibraryContextType {
   toggleAudioPlayPause: () => void;
   setAudioSpeed: (speed: 0.75 | 1 | 1.25 | 1.5 | 2) => void;
   seekAudio: (time: number) => void;
+  stopAudio: () => void;
   openAudioModal: () => void;
   closeAudioModal: () => void;
   setSearchQuery: (query: string) => void;
@@ -290,6 +291,19 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setAudioState(prev => ({ ...prev, currentTime: time }));
   };
 
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setAudioState(prev => ({
+      ...prev,
+      isPlaying: false,
+      currentTime: 0,
+      isModalOpen: false
+    }));
+  };
+
   const openAudioModal = () => {
     setAudioState(prev => ({ ...prev, isModalOpen: true }));
   };
@@ -327,6 +341,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         toggleAudioPlayPause,
         setAudioSpeed,
         seekAudio,
+        stopAudio,
         openAudioModal,
         closeAudioModal,
         setSearchQuery

@@ -10,6 +10,7 @@ export const AudioPlayerModal: React.FC = () => {
     setAudioSpeed, 
     playAudioTrack, 
     seekAudio,
+    stopAudio,
     activeBook 
   } = useLibrary();
 
@@ -39,8 +40,9 @@ export const AudioPlayerModal: React.FC = () => {
       <div className="w-full max-w-md bg-[#2C2421] border border-[#4A3E3D] rounded-3xl p-6 sm:p-8 text-[#FAF0E6] shadow-2xl relative">
         {/* Close Button */}
         <button
-          onClick={closeAudioModal}
+          onClick={stopAudio}
           className="absolute top-5 right-5 p-2 rounded-full text-[#8C7B73] hover:text-[#FAF0E6] hover:bg-[#3A322D] transition-smooth cursor-pointer"
+          title="Stop and Close"
         >
           <X size={20} />
         </button>
